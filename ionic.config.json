@@ -1,5 +1,7 @@
 {
   "name": "ShuttleBuddyFE",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
