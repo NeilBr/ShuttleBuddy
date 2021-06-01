@@ -3,3 +3,10 @@
   height: 100%;
   display: contents;
 }
+
+.overlay{
+  z-index: 9999;
+  position: absolute;
+  width: 100%;
+  margin: auto;
+}

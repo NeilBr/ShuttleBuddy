@@ -1,3 +1,19 @@
 <div id="map">
 
 </div>
+<div class="overlay">
+
+  <ion-button color="{{drawType == 'route' ? 'secondary' : 'primary'}}" (click)="setDrawType('route')">Route</ion-button>
+  <ion-button *ngIf="!currentRoute" color="{{drawType == 'stop' ? 'secondary' : 'primary'}}" (click)="setDrawType('stop')">Stop</ion-button>
+  <ion-button *ngIf="currentRoute" (click)="finishRoute()">Save
+    <ion-icon name="checkmark-circle"></ion-icon>
+  </ion-button>
+  <ion-button *ngIf="routes.length > 0 && !currentRoute" (click)="clearAllRoutes()">Remove All Routes
+    <ion-icon name="trash"></ion-icon>
+  </ion-button>
+  <ion-button *ngIf="currentRoute" (click)="cancelRoute()">Cancel 
+    <ion-icon name="close"></ion-icon>
+  </ion-button>
+
+  
+</div>
