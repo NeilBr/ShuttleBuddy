@@ -1,5 +1,32 @@
-<ion-content>
-  <div id="container">
-    <app-map></app-map>
-  </div>
-</ion-content>
+  <ion-split-pane contentId="main">
+    <ion-menu>
+      <div>
+        <ion-header [translucent]="true">
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-icon click="toggleMenu()" name="menu-outline" size="large"></ion-icon>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+    
+        <ion-list id="inbox-list">
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
+            <ion-item>
+              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+    
+        <ion-list id="labels-list">
+          <ion-list-header>Labels</ion-list-header>
+    
+          <ion-item *ngFor="let label of labels" lines="none">
+            <ion-icon slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
+            <ion-label>{{ label }}</ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-menu>
+  </ion-split-pane>
+  <ion-router-outlet ngClass="{{menuOpen? 'menu-open' : 'menu-closed'}}" ></ion-router-outlet>
