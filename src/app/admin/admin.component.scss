@@ -12,20 +12,21 @@ ion-button, ion-icon{
   cursor: pointer !important;
 }
 
-ion-split-pane.menu-open{
-  left: 13%;
-}
-
-ion-split-pane.menu-open{
-  left: 7%;
-}
-
 ion-router-outlet.menu-open{
   left: 13%;
+  transition: left 0.5s;
+
+}
+
+.menu-item:hover{
+  cursor: pointer;
+  color: #f9b42a;
 }
 
 ion-router-outlet.menu-closed{
-  left: 7%;
+  left: 3%;
+  transition: left 0.5s;
+
 }
 
 ion-menu ion-content {

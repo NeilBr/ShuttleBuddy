@@ -1,3 +1,9 @@
+import { ScheduleComponent } from './schedule/schedule.component';
+import { ManageUsersComponent } from './manage-users/manage-users.component';
+import { ManageRoutesComponent } from './manage-routes/manage-routes.component';
+import { ManageLocationsComponent } from './manage-locations/manage-locations.component';
+import { ManageBussesComponent } from './manage-busses/manage-busses.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
@@ -9,7 +15,15 @@ import { AdminComponent } from './admin.component';
 
 
 @NgModule({
-  declarations: [AdminComponent],
+  declarations: [
+    AdminComponent, 
+    DashboardComponent, 
+    ManageBussesComponent, 
+    ManageLocationsComponent,
+    ManageRoutesComponent,
+    ManageUsersComponent,
+    ScheduleComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,

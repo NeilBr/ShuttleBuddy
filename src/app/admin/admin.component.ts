@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
@@ -10,16 +11,16 @@ export class AdminComponent implements OnInit {
   menuOpen = true;
 
   public appPages = [
-    { title: 'Inbox', url: '/folder/Inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/Outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/Favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/Archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/Trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/Spam', icon: 'warning' },
+    { title: 'Dashboard', url: '/admin/map', icon: 'grid' },
+    { title: 'Schedule', url: '/admin/schedule', icon: 'time' },
+    { title: 'Users', url: '/admin/users', icon: 'people' },
+    { title: 'Busses', url: '/admin/busses', icon: 'bus' },
+    { title: 'Routes', url: '/admin/routes', icon: 'navigate' },
+    { title: 'Locations', url: '/admin/locations', icon: 'location' },
+    { title: 'Logout', url: '/auth/logout', icon: 'lock-open' },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {}
 
@@ -27,4 +28,7 @@ export class AdminComponent implements OnInit {
     this.menuOpen = !this.menuOpen;
   }
 
+  navigateTo(url){
+    this.router.navigate([url]);
+  }
 }
