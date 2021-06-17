@@ -13,7 +13,7 @@ ion-button, ion-icon{
 }
 
 ion-router-outlet.menu-open{
-  left: 13%;
+  left: 15%;
   transition: left 0.5s;
 
 }
@@ -24,7 +24,7 @@ ion-router-outlet.menu-open{
 }
 
 ion-router-outlet.menu-closed{
-  left: 3%;
+  left: 44px;
   transition: left 0.5s;
 
 }
