@@ -6,6 +6,8 @@ import { MapComponent } from './../shared/map/map.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './admin.component';
+import { ManageRoutesComponent } from './manage-routes/manage-routes.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   
@@ -13,9 +15,8 @@ const routes: Routes = [
     component: AdminComponent,
     children:[
       {
-        path: 'map',
-        loadChildren: () => import('./../shared/shared.module').then( m => m.SharedModule),
-        component: MapComponent
+        path: 'dashboard',
+        component: DashboardComponent,
       },
       {
         path: 'schedule',
@@ -31,11 +32,11 @@ const routes: Routes = [
       },
       {
         path: 'routes',
-        component: RouterModule
+        component: ManageRoutesComponent
       },
       {
         path: 'locations',
-        component: ManageLocationsComponent
+        component: ManageLocationsComponent,
       },
     ]
   }

@@ -1,4 +1,4 @@
-  <ion-split-pane contentId="main">
+  <ion-split-pane >
     <ion-menu>
       <div style="height: 100%;">
         <ion-header [translucent]="true">
@@ -14,6 +14,12 @@
             <ion-item class="menu-item" (click)="navigateTo(p.url)" >
               <ion-icon style="color: inherit;" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item class="menu-item" (click)="logout()" >
+              <ion-icon style="color: inherit;" slot="start" [ios]="'lock-open-outline'" [md]="'lock-open-sharp'"></ion-icon>
+              <ion-label>Logout</ion-label>
             </ion-item>
           </ion-menu-toggle>
         </ion-list>

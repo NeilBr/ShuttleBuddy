@@ -11,8 +11,7 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { AdminComponent } from './admin.component';
-
-
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   declarations: [
@@ -29,7 +28,8 @@ import { AdminComponent } from './admin.component';
     SharedModule,
     AdminRoutingModule,
     IonicModule,
-    FormsModule
+    FormsModule,
+    NgxDatatableModule
   ]
 })
 export class AdminModule { }

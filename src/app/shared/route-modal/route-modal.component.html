@@ -1,0 +1,44 @@
+<div class="modal-container">
+  <ion-card>
+
+    <ion-item-divider color="secondary">
+      <ion-label color="primary" >
+        <ion-title>{{routeAction}} Route</ion-title>
+      </ion-label>
+    </ion-item-divider>
+
+    <ion-item  lines="full">
+      <ion-label position="floating">Route Name</ion-label>
+      <ion-input type="text" [(value)]="route.name" (ionChange)="route.name = $event.detail.value" required ></ion-input>
+    </ion-item>
+    
+  <ion-item  lines="full">
+    <ion-label position="floating">Days the route is active</ion-label>
+    <ion-select placeholder="Select One" [(value)]="route.dayOfTheWeek" (ionChange)="route.dayOfTheWeek = $event.detail.value" multiple >
+      <ion-select-option value="sunday">Sunday</ion-select-option>
+      <ion-select-option value="monday">Monday</ion-select-option>
+      <ion-select-option value="tuesday">Tuesday</ion-select-option>
+      <ion-select-option value="wednesday">Wednesday</ion-select-option>
+      <ion-select-option value="thursday">Thursday</ion-select-option>
+      <ion-select-option value="friday">Friday</ion-select-option>
+      <ion-select-option value="saturday">Saturday</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item-divider color="secondary">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button color="success"  expand="block" (click)="closePopover('save')">Start Drawing Route <ion-icon slot="end" name="checkmark-outline"></ion-icon></ion-button>   
+        </ion-col>
+        <ion-col>
+          <ion-button color="danger"  expand="block" (click)="closePopover('cancel')">Cancel <ion-icon slot="end" name="close"></ion-icon></ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    
+    
+  </ion-item-divider>
+  </ion-card>
+</div>
+

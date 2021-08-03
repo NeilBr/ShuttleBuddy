@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Component({
   selector: 'app-admin',
@@ -11,16 +12,18 @@ export class AdminComponent implements OnInit {
   menuOpen = true;
 
   public appPages = [
-    { title: 'Dashboard', url: '/admin/map', icon: 'grid' },
+    { title: 'Dashboard', url: '/admin/dashboard', icon: 'grid' },
     { title: 'Schedule', url: '/admin/schedule', icon: 'time' },
     { title: 'Users', url: '/admin/users', icon: 'people' },
     { title: 'Busses', url: '/admin/busses', icon: 'bus' },
     { title: 'Routes', url: '/admin/routes', icon: 'navigate' },
     { title: 'Locations', url: '/admin/locations', icon: 'location' },
-    { title: 'Logout', url: '/auth/logout', icon: 'lock-open' },
   ];
   
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private authService: AuthenticationService
+  ) { }
 
   ngOnInit() {}
 
@@ -30,5 +33,10 @@ export class AdminComponent implements OnInit {
 
   navigateTo(url){
     this.router.navigate([url]);
+  }
+
+  logout(){
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

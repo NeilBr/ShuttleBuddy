@@ -1,3 +1,7 @@
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/themes/material.scss';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
+
 #container {
   text-align: center;
   position: absolute;
@@ -32,6 +36,12 @@ ion-router-outlet.menu-closed{
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }
+
+// ion-split-pane{
+//   --side-min-width: 225px;
+//   --side-max-width: 225px;
+// }
+
 
 ion-menu.md ion-content {
   --padding-start: 8px;

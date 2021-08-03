@@ -1,0 +1,43 @@
+<div class="modal-container">
+  <ion-card>
+    <ion-item-divider color="secondary">
+      <ion-label color="primary" >
+        <ion-title>{{locationAction}} Location</ion-title>
+        <ion-icon (click)="closePopover('cancel')" slot='right' name='close'></ion-icon>
+      </ion-label>
+      
+    </ion-item-divider>
+
+    <ion-item  lines="full">
+      <ion-label position="floating">Location Name</ion-label>
+      <ion-input type="text" [(value)]="location.name" (ionChange)="location.name = $event.detail.value" required [disabled]="locationAction === 'View'"></ion-input>
+    </ion-item>
+    
+    <ion-item  lines="full">
+      <ion-label position="floating">Location Type</ion-label>
+      <ion-select placeholder="Select One" [(value)]="location.locationType" (ionChange)="location.locationType = $event.detail.value" [disabled]="locationAction === 'View'">
+        <ion-select-option value="campus">Campus</ion-select-option>
+        <ion-select-option value="stop">Stop/Pickup Point</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item  lines="full">
+      <ion-label position="floating">Location Description</ion-label>
+      <ion-textarea [(value)]="location.description" (ionChange)="location.description = $event.detail.value" [disabled]="locationAction === 'View'"></ion-textarea>
+    </ion-item>
+
+    <ion-item-divider color="secondary" *ngIf="locationAction !== 'View'">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button color="success"  expand="block" (click)="closePopover('save')">Save <ion-icon slot="end" name="save"></ion-icon></ion-button>   
+          </ion-col>
+          <ion-col>
+            <ion-button color="danger"  expand="block" (click)="closePopover('cancel')">Cancel <ion-icon slot="end" name="close"></ion-icon></ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item-divider>
+  </ion-card>
+</div>
+

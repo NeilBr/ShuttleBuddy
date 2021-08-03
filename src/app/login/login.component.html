@@ -1,0 +1,23 @@
+<ion-content>
+  <ion-card class="title-card center">
+    <h1>NELSON MANDELA UNIVERSITY</h1> 
+    <h2>Shuttle Tracker</h2>
+  </ion-card>
+  <ion-card class="login-card">
+    <ion-item color="none"lines="full">
+      <ion-label position="floating">Username</ion-label>
+      <ion-input type="text"  [(ngModel)]="username" required></ion-input>
+    </ion-item>
+
+    <ion-item color="none" class="item" lines="full">
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password"  [(ngModel)]="password" required></ion-input>
+    </ion-item>
+
+    <ion-row>
+      <ion-col>
+        <ion-button [disabled]="!validForm()" color="primary" expand="block" (click)="login()">Log In</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+</ion-content>

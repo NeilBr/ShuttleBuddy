@@ -1,3 +1,16 @@
-<p>
-  manage-users works!
-</p>
+<ion-content [fullscreen]="true">
+  
+<ion-card>
+  <ngx-datatable 
+  class="material"
+  [limit]="7" 
+  [rows]="rows" 
+  [rowHeight]="60" 
+  [columns]="col"
+  [columnMode]="'force'" 
+  [sortType]="'multi'" 
+  [headerHeight]="60" 
+  [footerHeight]="60">
+</ngx-datatable>
+</ion-card>
+</ion-content>
