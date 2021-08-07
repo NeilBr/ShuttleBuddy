@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, O
 import { IonIcon, PopoverController } from '@ionic/angular';
 import { RandomColor } from 'angular-randomcolor';
 import { LocationService } from 'src/app/services/location.service';
+import { RoutesService } from 'src/app/services/routes.service';
 import { IonicMarkerIcons } from 'src/assets/icon/ionic_icons';
 import { LocationModalComponent } from '../location-modal/location-modal.component';
 import { Location } from '../models/location';
@@ -23,20 +24,23 @@ export class MapComponent implements OnInit, AfterViewInit {
     
   locations: Location[];
   locationMarkers: google.maps.Marker[];
+  routePolylines: google.maps.Polyline[];
   pointerEvent: MouseEvent;
 
   map: google.maps.Map;
   drawType = 'stop';
 
   newRoute: Route;
+
+  newRouteStops = [];
+
   currentRoute: google.maps.Polyline;
   curRoutePoints = [];
   routes = [];
 
-
-
   constructor(
     private locationService: LocationService,
+    private routesService: RoutesService,
     private popoverController: PopoverController,
   ) { }
   
@@ -46,7 +50,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    console.log('NGINIT FOR MAP');
+    this.routePolylines = [];
     this.locationMarkers = []; 
     this.locations = [];
 
@@ -62,7 +66,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         break;
       }
       case 'routes':{
-        this.createLocationsForRoutes();
+        this.initRoutesPage();
         break;
       }
       case 'dashboard':{
@@ -89,6 +93,27 @@ export class MapComponent implements OnInit, AfterViewInit {
     //   position: { lat:-33.94719166680535, lng: 25.54426054343095},
     //   title: "Hello World!",
     // });
+  }
+
+  initRoutesPage(){
+    this.createLocationsForRoutes();
+    this.setUpExistingRoutes()
+  }
+
+  setUpExistingRoutes(){
+    this.routesService.getAllRoutes().then((routes)=>{
+      routes.forEach((route)=>{
+        let curRoutePolyline = new google.maps.Polyline({
+          strokeColor: RandomColor.generateColor(),
+          strokeOpacity: 1.0,
+          strokeWeight: 3,
+        });
+        console.log(route);
+        curRoutePolyline.setPath(JSON.parse(route.pathPoints));
+        curRoutePolyline.setMap(this.map);
+        this.routePolylines.push(curRoutePolyline);
+      });
+    });
   }
 
   async createLocationsForRoutes(){
@@ -161,6 +186,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   addLocationToNewRoute(location: Location){
+    this.newRouteStops.push(location.id);
     if(!this.currentRoute){
       this.startRoute(location);
     }else{
@@ -191,7 +217,6 @@ export class MapComponent implements OnInit, AfterViewInit {
   addPointToRoute($event){
     this.curRoutePoints.push($event.latLng);
     this.currentRoute.setPath(this.curRoutePoints);
-    // console.log('POINTS', this.curRoutePoints);
 
     // const svgMarker = {
     //   path: "M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
@@ -213,13 +238,20 @@ export class MapComponent implements OnInit, AfterViewInit {
    
   }
 
-  finishRoute(){
+  async finishRoute(){
     //call save route
+   
+    this.populateNewRouteForSave();
     this.routes.push(this.currentRoute);
-    this.clearMarkers();
-    this.createLocationsForRoutes();
-    this.curRoutePoints = [];
-    this.currentRoute = null;
+    await this.routesService.createRoutes(this.newRoute).then((res)=>{
+      this.clearMarkers();
+      this.createLocationsForRoutes();
+      this.curRoutePoints = [];
+      this.currentRoute = null;
+      this.newRoute = null;
+      this.newRouteStops = [];
+    });
+    
   }
 
   cancelRoute(){
@@ -323,9 +355,9 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
     await popover.present();
 
-    popover.onDidDismiss().then((data) => {
-      if(data.data.action !== 'cancel'){
-      this.handleRoutePopoverClose(data, eventType)
+    popover.onDidDismiss().then((response) => {
+      if(response.data.action !== 'cancel'){
+      this.handleRoutePopoverClose(response.data.route, eventType)
     }
     });
   }
@@ -334,7 +366,17 @@ export class MapComponent implements OnInit, AfterViewInit {
     switch (eventType){
       case 'createRoute': {
         // add route details from popover and prep for drawing
-        this.newRoute = route;
+        this.newRoute = {
+          id: null,
+          dayOfTheWeek: '',
+          name: '',
+          pathPoints: '',
+          routeStops: '',
+          startLocationID: null,
+          stopLocationID: null
+        } as Route;
+        this.newRoute.name = route.name;
+        this.newRoute.dayOfTheWeek = route.dayOfTheWeek.toString();
         this.drawLocationsForDrawRoute();
         break;
       }
@@ -394,5 +436,12 @@ export class MapComponent implements OnInit, AfterViewInit {
       marker.setMap(null);
     });
     this.locationMarkers = [];
+  }
+
+  populateNewRouteForSave(){
+    this.newRoute.pathPoints = JSON.stringify(this.curRoutePoints); 
+    this.newRoute.routeStops = JSON.stringify(this.newRouteStops);
+    this.newRoute.startLocationID =this.newRouteStops[0];
+    this.newRoute.stopLocationID = this.newRouteStops[this.newRouteStops.length - 1];
   }
 }
