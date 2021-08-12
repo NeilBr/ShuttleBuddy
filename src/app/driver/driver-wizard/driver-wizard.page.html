@@ -1,0 +1,28 @@
+<ion-content>
+  <ion-card>
+    <ion-item>
+      <ion-label color="primary" position="floating">Select the Shuttle you are assigned</ion-label>
+      <ion-select placeholder="Select Shuttle..." *ngIf="!(isLoading | async)" (ionChange)="shuttleId = $event.detail.value">
+        <ion-select-option *ngFor="let route of allRoutes; let i = index"  value="{{i + 1}}">Shuttle {{i + 1}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label color="primary" position="floating">Select the route you will be travelling</ion-label>
+      <ion-select placeholder="Select Route..." *ngIf="!(isLoading | async)" (ionChange)="routeId = $event.detail.value">
+        <ion-select-option *ngFor="let route of allRoutes"  value="{{route.id}}">{{route.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label color="primary" position="floating">Select the route you want to use to mock geolocations</ion-label>
+      <ion-select placeholder="Select Route to Mock..." *ngIf="!(isLoading | async)" (ionChange)="mockRouteId = $event.detail.value">
+        <ion-select-option *ngFor="let route of allRoutes"  value="{{route.id}}">{{route.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-card>
+  <div style="padding: 32px">
+    <ion-button color="primary" expand="block" (click)="startNavigation()">Start Navigation</ion-button>
+  </div>
+
+</ion-content>
+

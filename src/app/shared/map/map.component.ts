@@ -1,8 +1,9 @@
 /// <reference types="@types/googlemaps" />
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { IonIcon, PopoverController } from '@ionic/angular';
+import { IonIcon, NavController, PopoverController } from '@ionic/angular';
 import { RandomColor } from 'angular-randomcolor';
 import { LocationService } from 'src/app/services/location.service';
+import { MapSocket } from 'src/app/services/map-socket.service';
 import { RoutesService } from 'src/app/services/routes.service';
 import { IonicMarkerIcons } from 'src/assets/icon/ionic_icons';
 import { LocationModalComponent } from '../location-modal/location-modal.component';
@@ -24,6 +25,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     
   locations: Location[];
   locationMarkers: google.maps.Marker[];
+  shuttleMarkers: google.maps.Marker[];
   routePolylines: google.maps.Polyline[];
   pointerEvent: MouseEvent;
 
@@ -42,7 +44,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     private locationService: LocationService,
     private routesService: RoutesService,
     private popoverController: PopoverController,
-  ) { }
+    private navController: NavController,
+    private mapSocket: MapSocket
+  ) { 
+  }
   
   ngAfterViewInit(): void {
     this.initMap();
@@ -53,6 +58,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.routePolylines = [];
     this.locationMarkers = []; 
     this.locations = [];
+    this.shuttleMarkers = [];
 
   }
 
@@ -71,6 +77,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
       case 'dashboard':{
         this.createLocationsForRoutes();
+        this.listenToSocket();
         break;
       }
       default:{
@@ -116,13 +123,46 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
   }
 
+  listenToSocket(){
+    this.mapSocket.shuttleLocationUpdates.subscribe((shuttleLocations) =>{
+      this.redrawShuttleLocations(shuttleLocations);
+    });
+  }
+
+  redrawShuttleLocations(shuttleLocations){
+      this.clearShuttleMarkers();
+      shuttleLocations.forEach((shuttleLocation) => {
+        this.shuttleMarkers.push(new google.maps.Marker({
+          position: shuttleLocation.position,
+          draggable:false,
+          title: 'Shuttle' + shuttleLocation.shuttleId,
+          map: this.map,
+          icon: {
+            url:'./assets/icon/bus-outline.svg', 
+            scaledSize: new google.maps.Size(25, 25),
+            fillColor: '#f9b42a',
+            strokeWeight: 2,
+            strokeColor: '#f9b42a',
+          }
+        }));
+      });
+  }
+
   async createLocationsForRoutes(){
     this.locations = await this.locationService.getAllLocations();
     this.locations.forEach(location => {
+      const icon = {
+        url: location.locationType === 'campus' ? './assets/icon/business-outline.svg' : './assets/icon/people-circle-outline.svg' , 
+        scaledSize: new google.maps.Size(40, 40),
+        fillColor: '#f9b42a',
+        strokeWeight: 2,
+        strokeColor: '#f9b42a',
+      }
       const newMarker = new google.maps.Marker({
         position: { lat: Number(location.latitude), lng: Number(location.longitude) },
         draggable:false,
         title: location.name,
+        icon
       });
       newMarker.setMap(this.map);
       newMarker.addListener("click", () => {
@@ -135,10 +175,20 @@ export class MapComponent implements OnInit, AfterViewInit {
   drawLocationsForDrawRoute(){
     this.clearMarkers();
     this.locations.forEach(location => {
+      console.log(location.locationType);
+      const icon = {
+        url: location.locationType === 'campus' ? './assets/icon/business-outline.svg' : './assets/icon/people-circle-outline.svg' , 
+        scaledSize: new google.maps.Size(40, 40),
+        fillColor: '#f9b42a',
+        strokeWeight: 2,
+        strokeColor: '#f9b42a',
+      }
+
       const newMarker = new google.maps.Marker({
         position: { lat: Number(location.latitude), lng: Number(location.longitude) },
         draggable:false,
         title: location.name,
+        icon
       });
       newMarker.setMap(this.map);
       newMarker.addListener("click", () => {
@@ -151,10 +201,18 @@ export class MapComponent implements OnInit, AfterViewInit {
   async createLocations(){
     this.locations = await this.locationService.getAllLocations();
     this.locations.forEach(location => {
+      const icon = {
+        url: location.locationType === 'campus' ? './assets/icon/business-outline.svg' : './assets/icon/people-circle-outline.svg' , 
+        scaledSize: new google.maps.Size(40, 40),
+        fillColor: '#f9b42a',
+        strokeWeight: 2,
+        strokeColor: '#f9b42a',
+      }
       const newMarker = new google.maps.Marker({
         position: { lat: Number(location.latitude), lng: Number(location.longitude) },
         draggable:false,
         title: location.name,
+        icon
       });
       newMarker.setMap(this.map);
       newMarker.addListener("click", () => {
@@ -436,6 +494,13 @@ export class MapComponent implements OnInit, AfterViewInit {
       marker.setMap(null);
     });
     this.locationMarkers = [];
+  }
+
+  clearShuttleMarkers(){
+    this.shuttleMarkers.forEach(marker =>{
+      marker.setMap(null);
+    });
+    this.shuttleMarkers = [];
   }
 
   populateNewRouteForSave(){

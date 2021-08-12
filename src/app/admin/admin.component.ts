@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { AuthenticationService } from '../authentication/authentication.service';
 
 @Component({
@@ -22,7 +23,8 @@ export class AdminComponent implements OnInit {
   
   constructor(
     private router: Router,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private navController: NavController
   ) { }
 
   ngOnInit() {}
@@ -32,11 +34,11 @@ export class AdminComponent implements OnInit {
   }
 
   navigateTo(url){
-    this.router.navigate([url]);
+    this.navController.navigateRoot([url]);
   }
 
   logout(){
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.navController.navigateRoot(['/login']);
   }
 }

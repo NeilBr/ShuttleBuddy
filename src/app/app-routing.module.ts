@@ -20,11 +20,16 @@ const routes: Routes = [
     data:{expectedRole: 'Admin'}
   },
   {
-    path: 'driver-wizard',
-    loadChildren: () => import('./driver-wizard/driver-wizard.module').then( m => m.DriverWizardPageModule),
+    path: 'driver',
+    loadChildren: () => import('./driver/driver.module').then( m => m.DriverPageModule),
     canActivate:[AuthenticationGuard],
     data:{expectedRole: 'Driver'}
   },
+  {
+    path: 'driver',
+    loadChildren: () => import('./driver/driver.module').then( m => m.DriverPageModule)
+  },
+
 
 ];
 

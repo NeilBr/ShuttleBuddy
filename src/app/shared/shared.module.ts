@@ -4,11 +4,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapComponent } from './map/map.component';
 import { ShellComponent } from './shell/shell.component';
-import { BrowserModule } from '@angular/platform-browser';
 import { LocationModalComponent } from './location-modal/location-modal.component';
 import { RouteModalComponent } from './route-modal/route-modal.component';
+import { DriverMapComponent } from './driver-map/driver-map.component';
 
-const COMPONENTS: any[] = [MapComponent, ShellComponent, LocationModalComponent, RouteModalComponent];
+const COMPONENTS: any[] = [MapComponent, DriverMapComponent, ShellComponent, LocationModalComponent, RouteModalComponent];
 
 @NgModule({
   declarations: [COMPONENTS],
@@ -18,7 +18,5 @@ const COMPONENTS: any[] = [MapComponent, ShellComponent, LocationModalComponent,
     FormsModule,
   ],
   exports: [...COMPONENTS],
-  providers: [
-  ]
 })
 export class SharedModule { }

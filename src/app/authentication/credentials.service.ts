@@ -18,6 +18,7 @@ const credentialsKey = 'credentials';
 })
 export class CredentialsService {
   private _credentials: Credentials | null = null;
+  private _shuttleDetails: any;
 
   constructor() {
     const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
@@ -42,6 +43,9 @@ export class CredentialsService {
     return this._credentials;
   }
 
+  get shuttleDetails(): any{
+    return this._shuttleDetails;
+  }
   /**
    * Sets the user credentials.
    * The credentials may be persisted across sessions by setting the `remember` parameter to true.
@@ -59,5 +63,9 @@ export class CredentialsService {
       sessionStorage.removeItem(credentialsKey);
       localStorage.removeItem(credentialsKey);
     }
+  }
+  
+  setShuttleDetails(shuttleDetails: any){
+    this._shuttleDetails = shuttleDetails;
   }
 }

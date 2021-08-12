@@ -11,7 +11,7 @@ import { CredentialsService } from '../authentication/credentials.service';
 export class LoginComponent implements OnInit {
   error: string | undefined;
   isLoading = false;
-  username = 'NeilB';
+  username = 'NeilBD';
   password = '123456';
 
   constructor(
@@ -37,7 +37,8 @@ export class LoginComponent implements OnInit {
               break;
             }
             case 'Driver':{
-              this.router.navigate([this.route.snapshot.queryParams.redirect || '/driver-wizard'], { replaceUrl: true });
+              this.router.navigate(['/driver/wizard'], { replaceUrl: true });
+              break;
             }
             default:
               this.router.navigate([this.route.snapshot.queryParams.redirect || '/user/map'], { replaceUrl: true });

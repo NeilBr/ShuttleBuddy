@@ -10,6 +10,10 @@ import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './authentication/AuthInterceptor';
 import { RoleGuardService } from './authentication/role-guard.service';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { MapSocket } from './services/map-socket.service';
+
+const config: SocketIoConfig = { url: 'http://localhost:3001/map-socket', options: {} };
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,11 +23,14 @@ import { RoleGuardService } from './authentication/role-guard.service';
     IonicModule.forRoot(), 
     HttpClientModule, 
     AppRoutingModule, 
-    SharedModule],
+    SharedModule,
+    SocketIoModule.forRoot(config),
+  ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, 
     AuthInterceptor,
-    RoleGuardService
+    RoleGuardService,
+    MapSocket
   ],
   bootstrap: [AppComponent],
 })
