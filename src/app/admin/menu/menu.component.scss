@@ -1,19 +1,62 @@
-@import '~@swimlane/ngx-datatable/index.css';
-@import '~@swimlane/ngx-datatable/themes/material.scss';
-@import '~@swimlane/ngx-datatable/assets/icons.css';
-
-.menu-item{
-  margin-bottom: 4px;
+.menu-side-bar{
+  position: absolute;
+  display: flex;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width:58px;
+  z-index: 1;
+  background: rgb(30, 30, 30);
+  animation: fadeIn linear 0.3s;
+  -webkit-animation: fadeIn linear 0.3s;
+  -moz-animation: fadeIn linear 0.3s;
+  -o-animation: fadeIn linear 0.3s;
+  -ms-animation: fadeIn linear 0.3s;
 }
 
-.menu-item:hover{
-  cursor: pointer;
-  color: #f9b42a;
+@keyframes fadeIn {
+  0% {opacity:0;
+      width: 0px;
+  }
+  100% {opacity:1;
+        width:58px;
+  }
 }
 
-ion-title{
-background-color: rgb(30, 30, 30);
-padding: 13px 10px;
+@-moz-keyframes fadeIn {
+  0% {opacity:0;
+    width: 0px;
+}
+100% {opacity:1;
+      width:58px;
+}
+}
+
+@-webkit-keyframes fadeIn {
+  0% {opacity:0;
+    width: 0px;
+}
+100% {opacity:1;
+      width:58px;
+}
+}
+
+@-o-keyframes fadeIn {
+  0% {opacity:0;
+    width: 0px;
+}
+100% {opacity:1;
+      width:58px;
+}
+}
+
+@-ms-keyframes fadeIn {
+  0% {opacity:0;
+    width: 0px;
+}
+100% {opacity:1;
+      width:58px;
+}
 }
 
 ion-button, ion-icon{
@@ -24,6 +67,19 @@ ion-router-outlet.menu-open{
   left: 15%;
   transition: left 0.5s;
 
+}
+ion-list{
+  width:58px;
+  margin-top: 42px;
+}
+
+ion-item{
+  display: inline-block;
+}
+
+.menu-item:hover{
+  cursor: pointer;
+  color: #f9b42a;
 }
 
 ion-router-outlet.menu-closed{

@@ -15,13 +15,27 @@
   <ion-item  lines="full">
     <ion-label position="floating">Days the route is active</ion-label>
     <ion-select placeholder="Select One" [(value)]="route.dayOfTheWeek" (ionChange)="route.dayOfTheWeek = $event.detail.value" multiple >
-      <ion-select-option value="sunday">Sunday</ion-select-option>
-      <ion-select-option value="monday">Monday</ion-select-option>
-      <ion-select-option value="tuesday">Tuesday</ion-select-option>
-      <ion-select-option value="wednesday">Wednesday</ion-select-option>
-      <ion-select-option value="thursday">Thursday</ion-select-option>
-      <ion-select-option value="friday">Friday</ion-select-option>
-      <ion-select-option value="saturday">Saturday</ion-select-option>
+      <ion-select-option value="Sunday">Sunday</ion-select-option>
+      <ion-select-option value="Monday">Monday</ion-select-option>
+      <ion-select-option value="Tuesday">Tuesday</ion-select-option>
+      <ion-select-option value="Wednesday">Wednesday</ion-select-option>
+      <ion-select-option value="Thursday">Thursday</ion-select-option>
+      <ion-select-option value="Friday">Friday</ion-select-option>
+      <ion-select-option value="Saturday">Saturday</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item  lines="full">
+    <ion-label position="floating">Start Location</ion-label>
+    <ion-select placeholder="Select One" [(value)]="route.startLocationID" (ionChange)="route.startLocationID = $event.detail.value">
+      <ion-select-option *ngFor="let location of locations" value="{{location.id}}">{{location.name}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item  lines="full">
+    <ion-label position="floating">End Location</ion-label>
+    <ion-select placeholder="Select One" [(value)]="route.stopLocationID" (ionChange)="route.stopLocationID = $event.detail.value">
+      <ion-select-option *ngFor="let location of locations" value="{{location.id}}">{{location.name}}</ion-select-option>
     </ion-select>
   </ion-item>
 

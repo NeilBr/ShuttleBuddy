@@ -1,0 +1,18 @@
+<div color="transparent" style="position: absolute;width: 58px;">  
+  <ion-buttons style="position: inherit;
+  padding: 4px;" slot="start">  
+    <ion-menu-button color="dark" ></ion-menu-button>   
+  </ion-buttons>  
+</div> 
+<div class="menu-side-bar" *ngIf="!getIsOpen()">
+  <ion-list> 
+    <ion-item *ngFor="let p of appPages; let i = index" class="menu-item" (click)="navigateTo(p.url)" >
+      <ion-icon style="color: inherit;" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'">
+      </ion-icon>
+    </ion-item>
+    <ion-item class="menu-item" (click)="logout()" >
+      <ion-icon style="color: inherit;" slot="start" [ios]="'lock-open-outline'" [md]="'lock-open-sharp'"></ion-icon>
+      <ion-label>Logout</ion-label>
+    </ion-item>
+  </ion-list>
+</div>

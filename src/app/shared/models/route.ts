@@ -4,6 +4,7 @@ export class Route {
   routeStops: string;
   pathPoints: string;
   dayOfTheWeek: string;
+  startTimes: string;
   startLocationID: number;
   stopLocationID: number;
 }

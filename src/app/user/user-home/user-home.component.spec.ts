@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { DriverNavigateComponent } from './driver-navigate.component';
+import { UserHomeComponent } from './user-home.component';
 
-describe('DriverNavigateComponent', () => {
-  let component: DriverNavigateComponent;
-  let fixture: ComponentFixture<DriverNavigateComponent>;
+describe('UserHomeComponent', () => {
+  let component: UserHomeComponent;
+  let fixture: ComponentFixture<UserHomeComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DriverNavigateComponent ],
+      declarations: [ UserHomeComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DriverNavigateComponent);
+    fixture = TestBed.createComponent(UserHomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

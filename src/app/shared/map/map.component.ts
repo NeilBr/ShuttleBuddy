@@ -1,14 +1,16 @@
 /// <reference types="@types/googlemaps" />
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { IonIcon, NavController, PopoverController } from '@ionic/angular';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NavController, PopoverController } from '@ionic/angular';
 import { RandomColor } from 'angular-randomcolor';
+import { MenuService } from 'src/app/admin/menu/menu.service';
 import { LocationService } from 'src/app/services/location.service';
 import { MapSocket } from 'src/app/services/map-socket.service';
 import { RoutesService } from 'src/app/services/routes.service';
-import { IonicMarkerIcons } from 'src/assets/icon/ionic_icons';
+import { MapStyle } from '../consts';
 import { LocationModalComponent } from '../location-modal/location-modal.component';
 import { Location } from '../models/location';
 import { Route } from '../models/route';
+import { routeStops } from '../models/routeStops';
 import { RouteModalComponent } from '../route-modal/route-modal.component';
 
 @Component({
@@ -23,6 +25,8 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   @Output() popup = new EventEmitter<any>();
     
+
+
   locations: Location[];
   locationMarkers: google.maps.Marker[];
   shuttleMarkers: google.maps.Marker[];
@@ -33,8 +37,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   drawType = 'stop';
 
   newRoute: Route;
-
-  newRouteStops = [];
+  startTimes = [];
+  newRouteStops = [] as routeStops[];
 
   currentRoute: google.maps.Polyline;
   curRoutePoints = [];
@@ -44,7 +48,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     private locationService: LocationService,
     private routesService: RoutesService,
     private popoverController: PopoverController,
-    private navController: NavController,
+    private menuService: MenuService,
     private mapSocket: MapSocket
   ) { 
   }
@@ -91,8 +95,9 @@ export class MapComponent implements OnInit, AfterViewInit {
  
     console.log(this.page);
     this.map = new google.maps.Map(document.getElementById(this.page), {
-      zoom: 17,
-      center: { lat:-33.94719166680535, lng: 25.54426054343095}
+      zoom: 15,
+      center: { lat:-34.00041952493058, lng: 25.666596530421096},
+      styles: MapStyle 
     });
     
     // TODO: Center map on geolocation 
@@ -244,7 +249,11 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   addLocationToNewRoute(location: Location){
-    this.newRouteStops.push(location.id);
+    this.newRouteStops.push({
+      locationID:location.id,
+      locationName:location.name,
+      time:''
+    });
     if(!this.currentRoute){
       this.startRoute(location);
     }else{
@@ -276,6 +285,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.curRoutePoints.push($event.latLng);
     this.currentRoute.setPath(this.curRoutePoints);
 
+    this.map.panTo($event.latLng);
+
     // const svgMarker = {
     //   path: "M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
     //   fillColor: "blue",
@@ -297,14 +308,16 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   async finishRoute(){
-    //call save route
    
     this.populateNewRouteForSave();
     this.routes.push(this.currentRoute);
-    await this.routesService.createRoutes(this.newRoute).then((res)=>{
+    await this.routesService.createRoutes({route: this.newRoute,
+    stops:this.newRouteStops}).then((res)=>{
       this.clearMarkers();
       this.createLocationsForRoutes();
       this.curRoutePoints = [];
+      this.newRouteStops = [];
+      this.startTimes = [];
       this.currentRoute = null;
       this.newRoute = null;
       this.newRouteStops = [];
@@ -314,8 +327,13 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   cancelRoute(){
     this.currentRoute.setMap(null);
+    this.clearMarkers();
+    this.createLocationsForRoutes();
     this.curRoutePoints = [];
+    this.newRouteStops = [];
     this.currentRoute = null;
+    this.newRoute = null;
+    this.newRouteStops = [];
   }
 
   clearAllRoutes(){
@@ -391,7 +409,9 @@ export class MapComponent implements OnInit, AfterViewInit {
           startLocationID: null,
           stopLocationID: null
         } as Route ,
-        'routeAction': 'Create'};
+        'routeAction': 'Create',
+        'locations': this.locations
+      };
         break;
       }
       case 'editRoute':{
@@ -415,27 +435,34 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     popover.onDidDismiss().then((response) => {
       if(response.data.action !== 'cancel'){
-      this.handleRoutePopoverClose(response.data.route, eventType)
+      this.handleRoutePopoverClose(response.data.route, eventType, response.data.startLocation, response.data.stopLocation)
     }
     });
   }
 
-  handleRoutePopoverClose(route, eventType){
+  handleRoutePopoverClose(route, eventType, startLocation: Location, stopLocation){
     switch (eventType){
       case 'createRoute': {
         // add route details from popover and prep for drawing
         this.newRoute = {
           id: null,
-          dayOfTheWeek: '',
-          name: '',
+          dayOfTheWeek: route.dayOfTheWeek.toString(),
+          name: route.name,
           pathPoints: '',
           routeStops: '',
-          startLocationID: null,
-          stopLocationID: null
+          startTimes: '',
+          startLocationID: route.startLocationID,
+          stopLocationID: route.stopLocationID
         } as Route;
-        this.newRoute.name = route.name;
-        this.newRoute.dayOfTheWeek = route.dayOfTheWeek.toString();
-        this.drawLocationsForDrawRoute();
+        this.drawLocationsForDrawRoute(); 
+        
+        this.map.setCenter(
+          {lat: +startLocation.latitude,
+          lng: +startLocation.longitude});
+
+        this.map.setZoom(19);
+        this.startTimes.push('07:00:00')
+        this.addLocationToNewRoute(startLocation);
         break;
       }
       case 'editRoute':{
@@ -505,8 +532,37 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   populateNewRouteForSave(){
     this.newRoute.pathPoints = JSON.stringify(this.curRoutePoints); 
-    this.newRoute.routeStops = JSON.stringify(this.newRouteStops);
-    this.newRoute.startLocationID =this.newRouteStops[0];
-    this.newRoute.stopLocationID = this.newRouteStops[this.newRouteStops.length - 1];
+    this.newRoute.routeStops = JSON.stringify(this.getRouteStopsIDs());
+    this.newRoute.startTimes = this.getStartTimes();
+    this.newRoute.startLocationID =this.newRouteStops[0].locationID;
+    this.newRoute.stopLocationID = this.newRouteStops[this.newRouteStops.length - 1].locationID;
+  }
+
+  getRouteStopsIDs(){
+    const stops = [];
+    this.newRouteStops.forEach((routeStop)   =>{
+        stops.push(routeStop.locationID);
+    });
+    return stops;
+  }
+
+  getIsOpen(){
+    return this.menuService.menuState;
+  }
+
+  addStartTime(){
+    this.startTimes.push('07:00:00'); 
+    
+  }
+  
+  getStartTimes(){
+
+    let startTimesString = '';
+    this.startTimes.forEach(start =>{
+      startTimesString = startTimesString === ''? 
+      startTimesString + start + ':00': startTimesString + ',' + start + ':00'; 
+    });
+  
+    return startTimesString;
   }
 }

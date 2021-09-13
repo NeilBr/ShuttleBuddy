@@ -24,7 +24,7 @@ export class RoutesService {
     return await this.http.patch<Route>(environment.serverUrl + 'routes/'+ route.id, route, this.getHeaders()).toPromise();
   }
 
-  async createRoutes(route: Route) :Promise<Route>{
+  async createRoutes(route: any) :Promise<any>{
     return await this.http.post<Route>(environment.serverUrl + 'routes', route, this.getHeaders()).toPromise();
   }
  

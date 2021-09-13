@@ -26,9 +26,12 @@ const routes: Routes = [
     data:{expectedRole: 'Driver'}
   },
   {
-    path: 'driver',
-    loadChildren: () => import('./driver/driver.module').then( m => m.DriverPageModule)
+    path: 'user',
+    loadChildren: () => import('./user/user.module').then( m => m.UserPageModule),
+    canActivate:[AuthenticationGuard],
+    data:{expectedRole: 'User'}
   },
+
 
 
 ];

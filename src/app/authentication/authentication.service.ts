@@ -51,4 +51,8 @@ export class AuthenticationService {
   getRole(){
      return this.credentialsService.credentials.role;
   }
+
+  getUserName(){
+    return this.credentialsService.credentials.username;
+  }
 }

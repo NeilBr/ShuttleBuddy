@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuController, NavController } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
+import { AuthenticationService } from 'src/app/authentication/authentication.service';
+import { AppPages } from 'src/app/shared/consts';
+import { MenuService } from '../menu/menu.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,8 +12,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor() { }
+  constructor( private menuService: MenuService,) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
+
+  getIsOpen(){
+    return this.menuService.menuState;
+  }
 
 }

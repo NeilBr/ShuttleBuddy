@@ -12,6 +12,7 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { AdminComponent } from './admin.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     ManageLocationsComponent,
     ManageRoutesComponent,
     ManageUsersComponent,
+    MenuComponent,
     ScheduleComponent
   ],
   imports: [

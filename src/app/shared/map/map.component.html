@@ -1,15 +1,28 @@
 <div>
-  <div id="locations" *ngIf="page === 'locations'"></div>  
-  <div id="dashboard" *ngIf="page === 'dashboard'"></div>
-  <div id="routes" *ngIf="page === 'routes'"></div>    
+  <div id="locations" *ngIf="page === 'locations'" [class]="!getIsOpen() ? 'menu-open' : ''"></div>  
+  <div id="dashboard" *ngIf="page === 'dashboard'" [class]="!getIsOpen() ? 'menu-open' : ''"></div>
+  <div id="routes" *ngIf="page === 'routes'" [class]="!getIsOpen() ? 'menu-open' : ''"></div>    
 
   <div class="overlay">
+    <div class="routeStops" *ngIf="startTimes.length > 0">
+      <ion-card style="font-size: medium; padding:5px; color:white">
+        Route Start Times
+      </ion-card>
+      <ion-card *ngFor="let startTime of startTimes; let i = index;">
+        <ion-item  lines="full">
+          <ion-label position="stacked">Start time</ion-label>
+          <ion-input type="time" value="{{startTimes[i]}}" (ionChange)="startTimes[i] = $event.detail.value" required></ion-input>
+        </ion-item>
+      </ion-card>
+      <ion-button style="padding-left: 10px; color: white;" color="secondary" (click)="addStartTime()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </div>
+    
+
     <ion-fab vertical="center" horizontal="end" *ngIf="page === 'routes'"  >
       <ion-fab-button (click)="startDrawingRoute()"><ion-icon name="add"></ion-icon></ion-fab-button>
       <ion-fab-list side="bottom">
-        <!-- <ion-fab-button (click)="startDrawingRoute()">
-          <ion-icon name="add"></ion-icon>
-        </ion-fab-button> -->
         <ion-fab-button [hidden]="!currentRoute" (click)="finishRoute()">
           <ion-icon name="save"></ion-icon>
         </ion-fab-button>

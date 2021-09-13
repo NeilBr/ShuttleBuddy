@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { MenuController, NavController } from '@ionic/angular';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { AppPages } from '../shared/consts';
+import { MenuService } from './menu/menu.service';
+
 
 @Component({
   selector: 'app-admin',
@@ -11,23 +14,23 @@ import { AuthenticationService } from '../authentication/authentication.service'
 export class AdminComponent implements OnInit {
 
   menuOpen = true;
-
-  public appPages = [
-    { title: 'Dashboard', url: '/admin/dashboard', icon: 'grid' },
-    { title: 'Schedule', url: '/admin/schedule', icon: 'time' },
-    { title: 'Users', url: '/admin/users', icon: 'people' },
-    { title: 'Busses', url: '/admin/busses', icon: 'bus' },
-    { title: 'Routes', url: '/admin/routes', icon: 'navigate' },
-    { title: 'Locations', url: '/admin/locations', icon: 'location' },
-  ];
+  userName = '';
+  appPages = AppPages;
   
   constructor(
     private router: Router,
     private authService: AuthenticationService,
-    private navController: NavController
+    private navController: NavController,
+    private menuService: MenuService,
+    private menuController: MenuController
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.menuController.isOpen().then(value =>{
+      this.menuService.setMenuState(value);
+    });
+    this.userName = this.authService.getUserName();
+  }
 
   toggleMenu(){
     this.menuOpen = !this.menuOpen;
@@ -41,4 +44,15 @@ export class AdminComponent implements OnInit {
     this.authService.logout();
     this.navController.navigateRoot(['/login']);
   }
+
+  menuClosed() {
+    //code to execute when menu has closed
+    this.menuService.setMenuState(false);
+  }
+
+  menuOpened() {
+    //code to execute when menu ha opened
+    this.menuService.setMenuState(true);
+  }
+
 }

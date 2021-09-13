@@ -1,6 +1,20 @@
 #locations, #dashboard, #routes{
-  width: 100%;
+  width: calc(100% - 58px);
   height: 100%;
   display: block;
   position: absolute !important;
+  top: 0;
+}
+
+.menu-open{
+  left: 58px;
+}
+
+.routeStops{
+  width:20%;
+  background-color: #f9b42a;
+}
+
+.overlay{
+  padding-left: 58px;
 }

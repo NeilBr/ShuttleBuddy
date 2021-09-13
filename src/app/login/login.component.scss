@@ -3,7 +3,9 @@
   margin: auto;
   top: 20%;
   padding: 10px;
-  background-color: transparent;
+  @media screen and (min-width: 480px) {
+    width: 25%;
+  }
 }
 
 .title-card{

@@ -45,10 +45,10 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     
-    this.routeId = this.credentialsService.shuttleDetails ? this.credentialsService.shuttleDetails.routeId : 6; 
+    this.routeId = this.credentialsService.shuttleDetails ? this.credentialsService.shuttleDetails.routeId : 10; 
     this.shuttleId = this.credentialsService.shuttleDetails ? this.credentialsService.shuttleDetails.shuttleId : 0; 
 
-    this.mockRouteId = this.credentialsService.shuttleDetails ? this.credentialsService.shuttleDetails.mockRouteId : 8; 
+    this.mockRouteId = this.credentialsService.shuttleDetails ? this.credentialsService.shuttleDetails.mockRouteId : 10; 
 
     this.routesService.getRoutes(this.mockRouteId).then((route)=>{
       this.mockTravel = route;
@@ -68,11 +68,8 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
       center: { lat:-33.94719166680535, lng: 25.54426054343095},
       tilt: 40
     });
-    // TODO: Center map on geolocation 
-    // let marker = new google.maps.Marker({
-    //   position: { lat:-33.94719166680535, lng: 25.54426054343095},
-    //   title: "Hello World!",
-    // });
+    // TODO: Center map on geolocation or center of all markers
+
   }
 
   async startRoute(){

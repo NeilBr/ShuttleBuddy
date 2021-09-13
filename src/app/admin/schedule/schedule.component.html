@@ -1,3 +1,33 @@
-<p>
-  schedule works!
-</p>
+<ion-content >   
+  <app-menu></app-menu>
+  <ion-content *ngIf="!(loading | async)">
+    <div>
+      <h1 style="margin-left: 75px">Schedule</h1>
+    </div>
+    <ion-card [class]="!getIsOpen() ? 'menu-open' : ''" *ngFor="let route of schedules.routes" >
+      <ion-card-header>
+        <ion-card-title style="display: flex; color: #f9b42a; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 50vw;" innerHTML="{{getRouteTitle(route)}}" ></div>
+          <div style="flex: 1; display: flex; flex-wrap: wrap;">
+            <ion-icon name="calendar" style="padding:4px;"></ion-icon>
+            <div style="text-transform: capitalize; padding: 3px;" 
+            *ngFor="let day of route.dayOfTheWeek.split(',')">
+              {{day}}
+            </div>
+            
+          </div>
+          
+        </ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        <ion-list *ngFor="let schedule of route.schedule">
+          <ion-item style="border-color: #f9b42a;">
+            {{schedule.locationID.name}}
+            <span slot="end">{{schedule.estTime}}</span>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+  </ion-card>
+  </ion-content>
+</ion-content>
