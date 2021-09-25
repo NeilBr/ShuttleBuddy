@@ -21,7 +21,7 @@ export class CredentialsService {
   private _shuttleDetails: any;
 
   constructor() {
-    const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
+    const savedCredentials = localStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
     }
@@ -57,15 +57,18 @@ export class CredentialsService {
     this._credentials = credentials || null;
 
     if (credentials) {
-      const storage = remember ? localStorage : sessionStorage;
-      storage.setItem(credentialsKey, JSON.stringify(credentials));
+      localStorage.setItem(credentialsKey, JSON.stringify(credentials));
     } else {
-      sessionStorage.removeItem(credentialsKey);
       localStorage.removeItem(credentialsKey);
     }
   }
   
   setShuttleDetails(shuttleDetails: any){
     this._shuttleDetails = shuttleDetails;
+    localStorage.setItem('shuttleDetails', JSON.stringify(shuttleDetails));
+  }
+
+  getShuttleDetails(){
+    return JSON.parse(localStorage.getItem('shuttleDetails'));
   }
 }

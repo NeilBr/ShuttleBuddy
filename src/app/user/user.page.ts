@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { MenuController, NavController } from '@ionic/angular';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Component({
   selector: 'app-user',
@@ -7,10 +8,14 @@ import { MenuController } from '@ionic/angular';
   styleUrls: ['./user.page.scss'],
 })
 export class UserPage implements OnInit {
-
-  constructor(private menu: MenuController) { }
+  userName = ''
+  constructor(
+    private menu: MenuController,
+    private authService: AuthenticationService,
+    private navController: NavController) { }
 
   ngOnInit() {
+    this.userName = this.authService.getUserName();
   }
 
   openFirst() {
@@ -25,5 +30,16 @@ export class UserPage implements OnInit {
   openCustom() {
     this.menu.enable(true, 'custom');
     this.menu.open('custom');
+  }
+
+  
+  goToSchedule(){
+    this.menu.close();
+    this.navController.navigateRoot(['/user/schedule']);
+  }
+
+  logout(){
+    this.authService.logout();
+    this.navController.navigateRoot(['/login']);
   }
 }

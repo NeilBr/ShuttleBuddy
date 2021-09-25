@@ -30,4 +30,9 @@
   top: 25vh !important;
   left: 40vw !important;
   width: 20vw !important;
+
+  @media screen and (max-width: 480px) {
+    left: 5vw !important;
+    width: 90vw !important;
+  }
 }

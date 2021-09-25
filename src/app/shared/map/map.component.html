@@ -34,7 +34,51 @@
         </ion-fab-button>
       </ion-fab-list>
     </ion-fab>
-    <!-- <ion-button color="{{drawType == 'route' ? 'secondary' : 'primary'}}" (click)="setDrawType('route')">Route</ion-button>
-    <ion-button *ngIf="!currentRoute" color="{{drawType == 'stop' ? 'secondary' : 'primary'}}" (click)="setDrawType('stop')">Stop</ion-button> -->
+
+    <div *ngIf="!viewShuttlesRoute">
+      <ion-searchbar #locationSearchAdmin color="light" 
+      placeholder="Search Places..."
+      [(value)]="searchString"
+        debounce="500" (ionFocus)="startFilter()"
+        (ionChange)="searchLocations($event.detail.value)">
+      </ion-searchbar>
+      <ion-card class="searchCard" *ngIf="searchingLocations">
+        <ion-list>
+          <ion-item  class="locationSearchItem" color="dark" *ngFor="let location of filteredLocations"  (click)="goToLocation(location)">
+              <span class="searchItemText">{{location.name}}</span>
+            <ion-icon slot="end" name="location"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </div>
+
+    <div *ngIf="viewShuttlesRoute && !(loading | async)">
+      <ion-card class="searchCard">
+       <ion-card-header color="dark" >
+        <ion-spinner *ngIf="(loadingShuttle | async)"></ion-spinner>
+         <span style="padding:0px 5px" innerHTML="{{getRouteTitle()}}"></span>
+          <ion-icon class="close-icon" (click)="stopShuttleView()" name="close-circle"></ion-icon>
+       </ion-card-header>
+        <ion-list>
+          <ion-item color="dark">
+            Next Stop:
+            <div style="display: flex; width: 100%;" *ngIf="nextStop">
+              <div style="margin-right: 20px;">{{nextStop.locationID.name}}</div>
+              <div style="flex: 1; text-align: end;">{{getNextStopEstimatedTime()}}</div>
+            </div>
+            <ion-spinner slot="end" *ngIf="(loadingShuttle | async)"></ion-spinner>
+          </ion-item>
+          <ion-item color="dark">
+            Final Stop: 
+            <div style="display: flex; width: 100%;" *ngIf="nextStop">
+              <div style="margin-right: 20px;">{{finalStop.locationID.name}}</div>
+              <div style="flex: 1; text-align: end;">{{getFinalStopEstimatedTime()}}</div>
+            </div>
+            <ion-spinner slot="end" *ngIf="(loadingShuttle | async)"></ion-spinner>
+
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </div>
   </div>
 </div>

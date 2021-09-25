@@ -20,7 +20,7 @@ export class ScheduleService {
     return await this.http.get<RouteScheduleDto[]>(environment.serverUrl + 'routes/schedule/route/'+ routeID, this.getHeaders()).toPromise();
   }
 
-  async getScheduleByID(scheduleID) :Promise<RouteScheduleDto[]>{
+  async getScheduleByID(scheduleID) :Promise<any>{
     return await this.http.get<RouteScheduleDto[]>(environment.serverUrl + 'routes/schedule/'+ scheduleID, this.getHeaders()).toPromise();
   }
 

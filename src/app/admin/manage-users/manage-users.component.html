@@ -1,16 +1,22 @@
 <ion-content [fullscreen]="true">   
   <app-menu></app-menu>
 <ion-card>
-  <ngx-datatable 
-  class="material"
-  [limit]="7" 
-  [rows]="rows" 
-  [rowHeight]="60" 
-  [columns]="col"
-  [columnMode]="'force'" 
-  [sortType]="'multi'" 
-  [headerHeight]="60" 
-  [footerHeight]="60">
-</ngx-datatable>
+  <ion-grid *ngIf="!(loading | async)" class="ion-margin">
+    <ion-row>
+      <ion-col>ID</ion-col>
+      <ion-col>Name</ion-col>
+      <ion-col>Role</ion-col>
+      <ion-col>Actions</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let user of users; index as i">
+      <ion-col>{{ user.id }}</ion-col>
+      <ion-col>{{ user.username }}</ion-col>
+      <ion-col>{{ user.role }}</ion-col>
+      <ion-col></ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>
+<ion-card>
+  
 </ion-card>
 </ion-content>

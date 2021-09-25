@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { AdminComponent } from './admin.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MenuComponent } from './menu/menu.component';
+import { ScheduleCardComponent } from './schedule/schedule-card/schedule-card.component';
+
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { MenuComponent } from './menu/menu.component';
     ManageRoutesComponent,
     ManageUsersComponent,
     MenuComponent,
-    ScheduleComponent
+    ScheduleComponent,
+    ScheduleCardComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +34,7 @@ import { MenuComponent } from './menu/menu.component';
     AdminRoutingModule,
     IonicModule,
     FormsModule,
-    NgxDatatableModule
+    NgxDatatableModule,
   ]
 })
 export class AdminModule { }

@@ -18,3 +18,30 @@
 .overlay{
   padding-left: 58px;
 }
+
+ion-searchbar{
+  width: 50vw !important;
+  margin: auto !important;
+}
+
+.searchCard{
+  max-height: 25vh;
+  width: 50vw;
+  margin: 0 auto;
+  overflow-y: auto;
+  padding-bottom: 2px;
+}
+.close-icon{
+  float: right;
+    padding-left: 12px;
+    position: absolute;
+    font-size: 22px;
+}
+.locationSearchItem:hover{
+  cursor: pointer;
+
+  .searchItemText{
+    color: #f9b42a !important;
+  }
+  
+}

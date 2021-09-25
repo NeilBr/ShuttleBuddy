@@ -19,7 +19,7 @@ export const MapStyle = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#757575"
+        "color": "#222428"
       }
     ]
   },
@@ -62,7 +62,7 @@ export const MapStyle = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#e1d309"
+        "color": "#f9b42a"
       }
     ]
   },
@@ -88,7 +88,7 @@ export const MapStyle = [
     "elementType": "labels.text",
     "stylers": [
       {
-        "color": "#eecc20"
+        "color": "#f9b42a"
       },
       {
         "visibility": "on"
@@ -100,7 +100,7 @@ export const MapStyle = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#f1d41e"
+        "color": "#f9b42a"
       }
     ]
   },
@@ -276,7 +276,16 @@ export const MapStyle = [
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#040f2f"
+        "color": "#0a283f"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#3d3d3d"
       }
     ]
   },
@@ -295,7 +304,6 @@ export const AppPages = [
   { title: 'Dashboard', url: '/admin/dashboard', icon: 'grid' },
   { title: 'Schedule', url: '/admin/schedule', icon: 'time' },
   { title: 'Users', url: '/admin/users', icon: 'people' },
-  { title: 'Busses', url: '/admin/busses', icon: 'bus' },
   { title: 'Routes', url: '/admin/routes', icon: 'navigate' },
   { title: 'Locations', url: '/admin/locations', icon: 'location' },
 ];

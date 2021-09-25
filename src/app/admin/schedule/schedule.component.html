@@ -1,33 +1,42 @@
 <ion-content >   
-  <app-menu></app-menu>
+  <app-menu *ngIf="showMenu"></app-menu>
   <ion-content *ngIf="!(loading | async)">
-    <div>
-      <h1 style="margin-left: 75px">Schedule</h1>
+    <div [style]="showMenu? 'display: flex; flex-wrap: wrap;': ''">
+      <div style="flex: 1;">
+        <h1 [style]="showMenu? 'margin-left: 75px' : 'margin-left: 15px'">Schedule</h1>
+      </div>
+      <div class="{{showMenu? 'admin-schedule': 'user-schedule'}}">
+        <ion-searchbar color="dark" class="searchbar background-white" debounce="500" (ionChange)="setScheduleFilter('search', $event.detail.value)"></ion-searchbar>
+        <ion-item *ngIf="showMenu" class="filter-select">
+            <ion-icon name="options"></ion-icon>
+            <ion-label style="display: none;">Filter By Days</ion-label>
+            <ion-select   multiple="true" [(value)]="filter.days" (ionChange)="setScheduleFilter('days', $event.detail.value)">
+              <ion-select-option value="Sunday">Sunday</ion-select-option>
+              <ion-select-option value="Monday">Monday</ion-select-option>
+              <ion-select-option value="Tuesday">Tuesday</ion-select-option>
+              <ion-select-option value="Wednesday">Wednesday</ion-select-option>
+              <ion-select-option value="Thursday">Thursday</ion-select-option>
+              <ion-select-option value="Friday">Friday</ion-select-option>
+              <ion-select-option value="Saturday">Saturday</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item *ngIf="!showMenu" lines="inset" >
+          <!-- <ion-icon name="options"></ion-icon> -->
+          <ion-label >Filter By Days</ion-label>
+          <ion-select  slot="end" multiple="true" [(value)]="filter.days" (ionChange)="setScheduleFilter('days', $event.detail.value)">
+            <ion-select-option value="Sunday">Sunday</ion-select-option>
+            <ion-select-option value="Monday">Monday</ion-select-option>
+            <ion-select-option value="Tuesday">Tuesday</ion-select-option>
+            <ion-select-option value="Wednesday">Wednesday</ion-select-option>
+            <ion-select-option value="Thursday">Thursday</ion-select-option>
+            <ion-select-option value="Friday">Friday</ion-select-option>
+            <ion-select-option value="Saturday">Saturday</ion-select-option>
+          </ion-select>
+      </ion-item>
+      </div>
     </div>
-    <ion-card [class]="!getIsOpen() ? 'menu-open' : ''" *ngFor="let route of schedules.routes" >
-      <ion-card-header>
-        <ion-card-title style="display: flex; color: #f9b42a; flex-wrap: wrap;">
-          <div style="flex: 1; min-width: 50vw;" innerHTML="{{getRouteTitle(route)}}" ></div>
-          <div style="flex: 1; display: flex; flex-wrap: wrap;">
-            <ion-icon name="calendar" style="padding:4px;"></ion-icon>
-            <div style="text-transform: capitalize; padding: 3px;" 
-            *ngFor="let day of route.dayOfTheWeek.split(',')">
-              {{day}}
-            </div>
-            
-          </div>
-          
-        </ion-card-title>
-      </ion-card-header>
-    
-      <ion-card-content>
-        <ion-list *ngFor="let schedule of route.schedule">
-          <ion-item style="border-color: #f9b42a;">
-            {{schedule.locationID.name}}
-            <span slot="end">{{schedule.estTime}}</span>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-  </ion-card>
+    <div [class]="!getIsOpen() && showMenu ? 'menu-open' : ''">
+      <schedule-card  *ngFor="let route of schedules.routes" [route]="route"></schedule-card>
+    </div>
   </ion-content>
 </ion-content>

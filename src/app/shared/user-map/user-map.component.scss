@@ -5,3 +5,18 @@
   position: absolute !important;
   top: 0;
 }
+.searchCard{
+  max-height: 25vh;
+  margin-top: 0;
+  overflow-y: auto;
+  padding-bottom: 2px;
+}
+.close-icon{
+  float: right;
+    padding-left: 12px;
+    position: absolute;
+    font-size: 22px;
+}
+.locationSearchItem:hover{
+  cursor: pointer;
+}

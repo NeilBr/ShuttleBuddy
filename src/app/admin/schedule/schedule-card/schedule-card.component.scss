@@ -1,0 +1,40 @@
+.menu-open{
+  margin-left: 68px;
+}
+
+.menu-open-header{
+  margin-left: 78px;
+}
+
+h1{
+  font-size: xx-large;
+}
+
+.mobile-text{
+  @media screen and (max-width: 480px) {
+    font-size: large;
+   }
+}
+.route-title{
+  display: flex;
+  color: #f9b42a;
+  flex-wrap: wrap;
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+  }
+}
+.route-title-div{
+  flex: 1; 
+  min-width: 50vw; 
+  margin: auto;
+}
+.rotate-90 {
+  display: inline-block; 
+  transform: rotate(90deg);
+}
+.schedule-locations{
+  @media screen and (max-width: 480px) {
+   max-height: 200px;
+   overflow-y: scroll;
+  }
+}

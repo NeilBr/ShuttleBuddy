@@ -7,6 +7,8 @@ import { CronJob } from 'cron';
 import { MapSocket } from 'src/app/services/map-socket.service';
 import { Location } from '../models/location';
 import { LocationService } from 'src/app/services/location.service';
+import { MapStyle } from '../consts';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -23,7 +25,6 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
 
   cronJob: CronJob;
 
-
   travelRoute: Route;
   travelRoutePolyline: google.maps.Polyline;
 
@@ -32,6 +33,7 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
   mockTravel: Route;
   mockTravelPath: any[];
   mockTravelIndex: number;
+  heading: number;
 
   curLocation: any;
   locations: Location[];
@@ -40,19 +42,24 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
     private locationService: LocationService,
     private routesService: RoutesService,
     private credentialsService: CredentialsService,
-    private mapSocket: MapSocket
-  ) { }
+    private mapSocket: MapSocket,
+    private router: Router
+  ) { 
+    
+  }
 
   ngOnInit() {
-    
-    this.routeId = this.credentialsService.shuttleDetails ? this.credentialsService.shuttleDetails.routeId : 10; 
-    this.shuttleId = this.credentialsService.shuttleDetails ? this.credentialsService.shuttleDetails.shuttleId : 0; 
-
-    this.mockRouteId = this.credentialsService.shuttleDetails ? this.credentialsService.shuttleDetails.mockRouteId : 10; 
-
-    this.routesService.getRoutes(this.mockRouteId).then((route)=>{
-      this.mockTravel = route;
-    });
+    const details = this.credentialsService.getShuttleDetails()
+    this.routeId = details.routeId; 
+    this.shuttleId = details.shuttleId; 
+    this.mockRouteId = details.mockRouteId; 
+    if(this.routeId && this.shuttleId && this.mockRouteId){
+      this.routesService.getRoutes(this.mockRouteId).then((route)=>{
+        this.mockTravel = route;
+      });
+    }else{
+      this.router.navigate(['/driver/wizard']);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -61,19 +68,24 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
     this.startRoute();
   }
 
+  ngOnDestroy(){
+
+  }
+
   async initMap(){
  
     this.map = new google.maps.Map(document.getElementById('Onroute'), {
-      zoom: 20,
+      zoom: 17,
       center: { lat:-33.94719166680535, lng: 25.54426054343095},
-      tilt: 40
+      styles: MapStyle,
+      mapTypeControl: false,
     });
     // TODO: Center map on geolocation or center of all markers
 
   }
 
   async startRoute(){
-    
+    if(this.routeId){
     await this.routesService.getRoutes(this.routeId).then((route)=>{
       this.travelRoute = route;
 
@@ -82,28 +94,33 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
         strokeOpacity: 1.0,
         strokeWeight: 5,
       });
+      if(this.mockTravel){
+
       const pathPoints = JSON.parse(this.mockTravel.pathPoints);
-      this.map.setCenter(pathPoints[0]);
-      this.shuttleMarker = new google.maps.Marker({
-        position: pathPoints[0],
-        draggable:false,
-        title: 'Shuttle',
-        map: this.map,
-        icon: {
-          url:'./assets/icon/bus-outline.svg', 
-          scaledSize: new google.maps.Size(50, 50),
-          fillColor: '#f9b42a',
-          strokeWeight: 2,
-          strokeColor: '#f9b42a',
-        }
-      });
-      this.mockTravelIndex = 0;
-      this.travelRoutePolyline.setPath(JSON.parse(this.travelRoute.pathPoints));
-      this.travelRoutePolyline.setMap(this.map);
-      this.startBroadcast();
+        this.map.setCenter(pathPoints[0]);
+        this.shuttleMarker = new google.maps.Marker({
+          position: pathPoints[0],
+          draggable:false,
+          title: 'Shuttle',
+          map: this.map,
+          icon: {
+            url:'./assets/icon/bus-outline.svg', 
+            scaledSize: new google.maps.Size(50, 50),
+            fillColor: '#f9b42a',
+            strokeWeight: 2,
+            strokeColor: '#f9b42a',
+          }
+        });
+        this.mockTravelIndex = 0;
+        this.travelRoutePolyline.setPath(JSON.parse(this.travelRoute.pathPoints));
+        this.travelRoutePolyline.setMap(this.map);
+        this.startBroadcast();
+      }else{
+        this.startRoute();
+      }
     });
     
-    
+  }
 
   }
 
@@ -140,10 +157,13 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
          minDistance = d; closestIndex = index;
         }  
     });
-    console.log(newpath, closestIndex);
     newpath.splice(1, closestIndex );
     newpath[0] = this.curLocation;
-    console.log(newpath);
+    // const start = new google.maps.LatLng(+newpath[0].lng , +newpath[0].lng);
+    // const end = new google.maps.LatLng(+newpath[1].lng , +newpath[1].lng);
+
+    // this.heading = google.maps.geometry.spherical.computeHeading(start, end);
+    // console.log(newpath);
     this.travelRoutePolyline.setPath(newpath);
   }
   
@@ -163,14 +183,15 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
     const newPos = this.mockTravelPath[this.mockTravelIndex]
     this.mapSocket.sendPosition({
       shuttleId: this.shuttleId,
-      position: newPos
+      position: newPos,
+      routeID: this.routeId
     });
     this.curLocation= newPos;
     this.shuttleMarker.setPosition(newPos);
     this.map.panTo(newPos);
     if(this.mockTravelIndex !== this.mockTravelPath.length -1){
       this.mockTravelIndex++;
-    }else{
+    } else {
       this.mockTravelIndex = 0;
     }
   }

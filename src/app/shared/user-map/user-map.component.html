@@ -2,5 +2,47 @@
   <div id="User"></div>
 
   <div class="overlay">
+    <div *ngIf="!viewShuttlesRoute">
+      <ion-searchbar #locationSearch color="light" 
+      placeholder="Search Places..."
+      [(value)]="searchString"
+        debounce="500" (ionFocus)="startFilter()"
+        (ionChange)="searchLocations($event.detail.value)">
+      </ion-searchbar>
+      <ion-card class="searchCard" *ngIf="searchingLocations">
+        <ion-list>
+          <ion-item class="locationSearchItem" color="secondary" *ngFor="let location of filteredLocations"  (click)="goToLocation(location)">
+            {{location.name}}
+            <ion-icon slot="end" name="location"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </div>
+    <div *ngIf="viewShuttlesRoute && !(loading | async)">
+      <ion-card class="searchCard">
+       <ion-card-header color="dark" >
+         <span style="padding:0px 5px" innerHTML="{{getRouteTitle()}}"></span>
+          <ion-icon class="close-icon" (click)="stopShuttleView()" name="close-circle"></ion-icon>
+       </ion-card-header>
+        <ion-list>
+          <ion-item color="dark">
+            Next Stop:
+            <div style="display: flex; width: 100%;" *ngIf="nextStop">
+              <div style="
+              margin-right: 20px;">{{nextStop.locationID.name}}</div>
+              <div>{{getNextStopEstimatedTime()}}</div>
+            </div>
+          </ion-item>
+          <ion-item color="dark">
+            Final Stop: 
+            <div style="display: flex; width: 100%;" *ngIf="nextStop">
+              <div style="
+              margin-right: 20px;">{{finalStop.locationID.name}}</div>
+              <div>{{getFinalStopEstimatedTime()}}</div>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </div>
   </div>
 </div>

@@ -1,11 +1,14 @@
 /// <reference types="@types/googlemaps" />
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NavController, PopoverController } from '@ionic/angular';
 import { RandomColor } from 'angular-randomcolor';
+import * as moment from 'moment';
+import { BehaviorSubject } from 'rxjs';
 import { MenuService } from 'src/app/admin/menu/menu.service';
 import { LocationService } from 'src/app/services/location.service';
 import { MapSocket } from 'src/app/services/map-socket.service';
 import { RoutesService } from 'src/app/services/routes.service';
+import { ScheduleService } from 'src/app/services/schedule.service';
 import { MapStyle } from '../consts';
 import { LocationModalComponent } from '../location-modal/location-modal.component';
 import { Location } from '../models/location';
@@ -24,8 +27,19 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() data: any;
 
   @Output() popup = new EventEmitter<any>();
-    
+  
+  @ViewChild('locationSearchAdmin', { read: ElementRef }) locationSearchAdmin: ElementRef;
 
+  loadingShuttle = new BehaviorSubject(false);
+
+  shuttleTravelRoute: Route;
+  viewShuttleLocation: any;
+  shuttleRoutePolyline: google.maps.Polyline;
+  viewShuttlesRoute = false;
+  shuttleClientID: string;
+  schedule: any;
+  nextStop: any;
+  finalStop: any;
 
   locations: Location[];
   locationMarkers: google.maps.Marker[];
@@ -44,10 +58,15 @@ export class MapComponent implements OnInit, AfterViewInit {
   curRoutePoints = [];
   routes = [];
 
+  searchingLocations = false;
+  searchString = '';
+  filteredLocations: Location[];
+
   constructor(
     private locationService: LocationService,
     private routesService: RoutesService,
     private popoverController: PopoverController,
+    private scheduleService: ScheduleService,
     private menuService: MenuService,
     private mapSocket: MapSocket
   ) { 
@@ -99,6 +118,13 @@ export class MapComponent implements OnInit, AfterViewInit {
       center: { lat:-34.00041952493058, lng: 25.666596530421096},
       styles: MapStyle 
     });
+
+    this.map.addListener("mousedown", () => {
+      if(this.searchingLocations){
+        this.locationSearchAdmin.nativeElement.blur();
+        this.endFilter(); 
+      }
+    });
     
     // TODO: Center map on geolocation 
     // let marker = new google.maps.Marker({
@@ -118,47 +144,78 @@ export class MapComponent implements OnInit, AfterViewInit {
         let curRoutePolyline = new google.maps.Polyline({
           strokeColor: RandomColor.generateColor(),
           strokeOpacity: 1.0,
-          strokeWeight: 3,
+          strokeWeight: 5,
         });
         console.log(route);
         curRoutePolyline.setPath(JSON.parse(route.pathPoints));
         curRoutePolyline.setMap(this.map);
+        curRoutePolyline.addListener("mouseover", ($event) => {
+          curRoutePolyline.setOptions({strokeWeight: 10})
+        });
+        curRoutePolyline.addListener("mouseout", ($event) => {
+          curRoutePolyline.setOptions({strokeWeight: 5})
+        });
+        curRoutePolyline.addListener("click", ($event) => {
+          this.editRoute(route);
+        });
         this.routePolylines.push(curRoutePolyline);
       });
     });
   }
 
+  editRoute(route){
+    
+  }
+  
   listenToSocket(){
+    
     this.mapSocket.shuttleLocationUpdates.subscribe((shuttleLocations) =>{
+      console.log('Listening');
       this.redrawShuttleLocations(shuttleLocations);
     });
   }
 
-  redrawShuttleLocations(shuttleLocations){
-      this.clearShuttleMarkers();
-      shuttleLocations.forEach((shuttleLocation) => {
-        this.shuttleMarkers.push(new google.maps.Marker({
-          position: shuttleLocation.position,
-          draggable:false,
-          title: 'Shuttle' + shuttleLocation.shuttleId,
-          map: this.map,
-          icon: {
-            url:'./assets/icon/bus-outline.svg', 
-            scaledSize: new google.maps.Size(25, 25),
-            fillColor: '#f9b42a',
-            strokeWeight: 2,
-            strokeColor: '#f9b42a',
-          }
-        }));
+  async redrawShuttleLocations(shuttleLocations){
+    this.clearShuttleMarkers();
+    await shuttleLocations.forEach((shuttleLocation) => {
+      const shuttleMarker = new google.maps.Marker({
+        position: shuttleLocation.position,
+        draggable:false,
+        title: 'Shuttle' + shuttleLocation.shuttleId,
+        map: this.map,
+        icon: {
+          url:'./assets/icon/bus-outline.svg', 
+          scaledSize: new google.maps.Size(25, 25),
+          fillColor: '#f9b42a',
+          strokeWeight: 2,
+          strokeColor: '#f9b42a',
+        },
+        zIndex: 999
       });
-  }
+      this.shuttleMarkers.push(shuttleMarker);
+      
+      if(!this.viewShuttlesRoute){
+        shuttleMarker.addListener("click",() => {
+          this.viewShuttleRoute(shuttleLocation);
+        });
+      }else{
+        if(shuttleLocation.clientID === this.shuttleClientID){
+          this.viewShuttleLocation = shuttleLocation.position;
+        }
+      }
 
+    });
+    if(this.viewShuttlesRoute){
+      this.redrawPolylineRoute();
+    }
+  }
+  
   async createLocationsForRoutes(){
     this.locations = await this.locationService.getAllLocations();
     this.locations.forEach(location => {
       const icon = {
         url: location.locationType === 'campus' ? './assets/icon/business-outline.svg' : './assets/icon/people-circle-outline.svg' , 
-        scaledSize: new google.maps.Size(40, 40),
+        scaledSize: new google.maps.Size(24, 24),
         fillColor: '#f9b42a',
         strokeWeight: 2,
         strokeColor: '#f9b42a',
@@ -330,10 +387,11 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.clearMarkers();
     this.createLocationsForRoutes();
     this.curRoutePoints = [];
-    this.newRouteStops = [];
-    this.currentRoute = null;
-    this.newRoute = null;
-    this.newRouteStops = [];
+      this.newRouteStops = [];
+      this.startTimes = [];
+      this.currentRoute = null;
+      this.newRoute = null;
+      this.newRouteStops = []; 
   }
 
   clearAllRoutes(){
@@ -565,4 +623,166 @@ export class MapComponent implements OnInit, AfterViewInit {
   
     return startTimesString;
   }
+
+  viewShuttleRoute(shuttle: any){
+    this.loadingShuttle.next(true);
+    this.routesService.getRoutes(shuttle.routeID).then(route => {
+      this.shuttleTravelRoute = route;
+      this.viewShuttleLocation = shuttle.position;
+      this.viewShuttlesRoute = true;
+      this.shuttleClientID = shuttle.clientID;
+      this.shuttleRoutePolyline = new google.maps.Polyline({
+        strokeColor: RandomColor.generateColor(),
+        strokeOpacity: 1.0,
+        strokeWeight: 5,
+      });
+      this.map.panTo(shuttle.position);
+      this.shuttleRoutePolyline.setMap(this.map);
+      this.scheduleService.getScheduleByID(shuttle.routeID).then(schedule =>{
+        this.schedule = schedule;
+        this.finalStop = schedule.schedule[schedule.schedule.length - 1];
+        this.redrawPolylineRoute();
+        this.loadingShuttle.next(false);
+      });
+    });
+
+  }
+
+  async redrawPolylineRoute(){
+    let newpath = JSON.parse(this.shuttleTravelRoute.pathPoints);
+    let closestIndex = 0;
+    let minDistance = 999999999;
+    await newpath.forEach((location, index) => {
+      const d = this.haversine_distance(this.viewShuttleLocation, location);
+      if(d <= minDistance){
+         minDistance = d; closestIndex = index;
+        }  
+    });
+    
+    newpath.splice(1, closestIndex);
+    newpath[0] = this.viewShuttleLocation;
+    this.shuttleRoutePolyline.setPath(newpath);
+
+    this.setNextStop(JSON.parse(JSON.stringify(newpath)));
+  }
+  
+  async setNextStop(pathPoints:any[]){
+    let returnSchedule = null;
+    for(let point of pathPoints) {
+      if(this.schedule){
+        for(let schedule of this.schedule.schedule) {
+          if(point.lat === +schedule.locationID.latitude && point.lng === +schedule.locationID.longitude){
+            returnSchedule = schedule;
+            break;
+          }
+        }
+        if(returnSchedule){
+          this.nextStop = returnSchedule;
+          // console.log('STOP', this.nextStop);
+          break;
+        }
+      }  
+    }
+  }
+  // https://cloud.google.com/blog/products/maps-platform/how-calculate-distances-map-maps-javascript-api
+  haversine_distance(mk1, mk2) {
+    var R = 3958.8; // Radius of the Earth in miles
+    var rlat1 = mk1.lat * (Math.PI/180); // Convert degrees to radians
+    var rlat2 = mk2.lat * (Math.PI/180); // Convert degrees to radians
+    var difflat = rlat2-rlat1; // Radian difference (latitudes)
+    var difflon = (mk2.lng - mk1.lng) * (Math.PI/180); // Radian difference (longitudes)
+
+    var d = 2 * R * Math.asin(Math.sqrt(Math.sin(difflat/2)*Math.sin(difflat/2)+Math.cos(rlat1)*Math.cos(rlat2)*Math.sin(difflon/2)*Math.sin(difflon/2)));
+    return d;
+  }
+
+  getRouteTitle(){
+    if(this.schedule){
+      if(this.schedule.schedule.length > 0){
+        let start = this.schedule.schedule[0];
+        let end  = this.schedule.schedule[this.schedule.schedule.length - 1];
+    
+        return start.locationID.name + ' &nbsp &nbsp ➤ &nbsp &nbsp ' + end.locationID.name;
+      } else {
+        return this.schedule.name;
+      }
+    }
+  }
+
+  getNextStopEstimatedTime(){
+    let scheduleIndex = 0;
+    let count = 0;
+    for(let time of this.schedule.startTimes.split(',')){
+      const currentTime = moment();
+      const startTime = moment(moment().format('DD MM YYYY') + ' ' + time, 'DD MM YYYY HH:mm:ss');
+      if(startTime.isBefore(currentTime)){
+        scheduleIndex = count;
+      }
+      ++count;
+    };
+    return this.nextStop.estTime.split(',')[scheduleIndex];
+
+  }
+
+  getFinalStopEstimatedTime(){
+    let scheduleIndex = 0;
+    let count = 0;
+    for(let time of this.schedule.startTimes.split(',')){
+      const currentTime = moment();
+      const startTime = moment(moment().format('DD MM YYYY') + ' ' + time, 'DD MM YYYY HH:mm:ss');
+      if(startTime.isBefore(currentTime)){
+        scheduleIndex = count;
+      }
+      ++count;
+    };
+    return this.finalStop.estTime.split(',')[scheduleIndex];
+  }
+
+  stopShuttleView(){
+    this.shuttleTravelRoute = null;
+    this.viewShuttleLocation= null;
+    this.shuttleRoutePolyline.setMap(null);
+    this.shuttleRoutePolyline= null;
+    this.viewShuttlesRoute = false;
+    this.shuttleClientID= null;
+    this.schedule= null;
+    this.nextStop= null;
+    this.finalStop= null;
+  }
+
+  searchLocations(search: string){
+    if(search.trim()!== ''){
+      this.searchString = search;
+      this.searchingLocations = true;
+    }else{
+      this.searchString = '';
+    }
+    this.filterLocations();
+
+  }
+  startFilter(){
+    this.searchingLocations = true;
+    this.filterLocations();
+
+  }
+  endFilter(){
+    this.searchingLocations = this.searchString.trim()!== '';
+  }
+
+  filterLocations(){
+    const newFilter = [];
+    this.locations.forEach((location) =>{
+      if(location.name.toUpperCase().includes(this.searchString.toUpperCase())){
+        newFilter.push(JSON.parse(JSON.stringify(location)))
+      }
+    });
+    this.filteredLocations = JSON.parse(JSON.stringify(newFilter));
+  }
+
+  goToLocation(location: Location){
+    this.map.panTo({lat: +location.latitude, lng: +location.longitude});
+    this.map.setZoom(19);
+    this.endFilter();
+  }
+
 }

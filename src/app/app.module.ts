@@ -12,6 +12,7 @@ import { AuthInterceptor } from './authentication/AuthInterceptor';
 import { RoleGuardService } from './authentication/role-guard.service';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { MapSocket } from './services/map-socket.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const config: SocketIoConfig = { url: 'http://localhost:3001/map-socket', options: {} };
 
@@ -25,6 +26,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3001/map-socket', option
     AppRoutingModule, 
     SharedModule,
     SocketIoModule.forRoot(config),
+    BrowserAnimationsModule,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, 
