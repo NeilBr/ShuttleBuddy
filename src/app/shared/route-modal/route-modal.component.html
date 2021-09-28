@@ -43,13 +43,13 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-button color="success"  expand="block" (click)="closePopover('save')">Start Drawing Route <ion-icon slot="end" name="checkmark-outline"></ion-icon></ion-button>   
+          <ion-button color="success" [disabled]="!isValid()"  expand="block" (click)="closePopover('save')">Start Drawing Route <ion-icon slot="end" name="checkmark-outline"></ion-icon></ion-button>   
         </ion-col>
         <ion-col>
           <ion-button color="danger"  expand="block" (click)="closePopover('cancel')">Cancel <ion-icon slot="end" name="close"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
-    </ion-grid>
+    </ion-grid> 
     
     
   </ion-item-divider>

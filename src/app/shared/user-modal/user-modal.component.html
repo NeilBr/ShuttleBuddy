@@ -1,0 +1,113 @@
+<div class="modal-container">
+  <ion-card  *ngIf="userAction === 'Edit'">
+    <ion-item-divider color="secondary">
+      <ion-label color="primary" >
+        <ion-title>{{userAction}} User</ion-title>
+        <!-- <ion-icon (click)="closePopover('cancel')" slot='right' name='close'></ion-icon> -->
+      </ion-label>
+      
+    </ion-item-divider>
+
+    <ion-item  lines="full">
+      <ion-label position="floating">User Name</ion-label>
+      <ion-input type="text" [(value)]="user.username" (ionChange)="user.username = $event.detail.value" required [disabled]="userAction === 'View'"></ion-input>
+    </ion-item>
+    
+    <ion-item  lines="full">
+      <ion-label position="floating">User Role</ion-label>
+      <ion-select placeholder="Select One" [(value)]="user.role" (ionChange)="user.role = $event.detail.value" [disabled]="userAction === 'View'">
+        <ion-select-option value="Admin">Admin</ion-select-option>
+        <ion-select-option value="User">User</ion-select-option>
+        <ion-select-option value="Driver">Driver</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item-divider color="secondary" >
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button color="success" [disabled]="!isEditValid()"  expand="block" (click)="closePopover('save')">Save <ion-icon slot="end" name="save"></ion-icon></ion-button>   
+          </ion-col>
+          <ion-col>
+            <ion-button color="danger"  expand="block" (click)="closePopover('cancel')">Cancel <ion-icon slot="end" name="close"></ion-icon></ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item-divider>
+  </ion-card>
+  <ion-card  *ngIf="userAction === 'Create'">
+    <ion-item-divider color="secondary">
+      <ion-label color="primary" >
+        <ion-title>{{userAction}} User</ion-title>
+        <!-- <ion-icon (click)="closePopover('cancel')" slot='right' name='close'></ion-icon> -->
+      </ion-label>
+      
+    </ion-item-divider>
+
+    <ion-item  lines="full">
+      <ion-label position="floating">User Name</ion-label>
+      <ion-input type="text" [(value)]="user.username" (ionChange)="user.username = $event.detail.value" required [disabled]="userAction === 'View'"></ion-input>
+    </ion-item>
+    
+    <ion-item  lines="full">
+      <ion-label position="floating">User Role</ion-label>
+      <ion-select placeholder="Select One" [(value)]="user.role" (ionChange)="user.role = $event.detail.value" [disabled]="userAction === 'View'">
+        <ion-select-option value="Admin">Admin</ion-select-option>
+        <ion-select-option value="User">User</ion-select-option>
+        <ion-select-option value="Driver">Driver</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item  lines="full">
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="text" [(value)]="user.password" (ionChange)="user.password = $event.detail.value" required [disabled]="userAction === 'View'"></ion-input>
+    </ion-item>
+    <ion-item  lines="full">
+      <ion-label position="floating">Confirm Password</ion-label>
+      <ion-input type="text" [(value)]="confirmPassword" (ionChange)="confirmPassword = $event.detail.value" required [disabled]="userAction === 'View'"></ion-input>
+    </ion-item>
+
+    <ion-item-divider color="secondary" >
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button color="success" [disabled]="!isValid()"  expand="block" (click)="closePopover('save')">Save <ion-icon slot="end" name="save" ></ion-icon></ion-button>   
+          </ion-col>
+          <ion-col>
+            <ion-button color="danger"  expand="block" (click)="closePopover('cancel')">Cancel <ion-icon slot="end" name="close"></ion-icon></ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item-divider>
+  </ion-card>
+  <ion-card  *ngIf="userAction === 'Delete'">
+    <ion-item-divider color="secondary">
+      <ion-label color="primary" >
+        <ion-title>{{userAction}} User
+        </ion-title>
+        <!-- <ion-icon (click)="closePopover('cancel')" slot='right' name='close'></ion-icon> -->
+      </ion-label>
+      
+    </ion-item-divider>
+    <ion-card-content>
+      Are you sure you want delete {{user.username}}?
+    </ion-card-content>
+      <ion-item-divider color="secondary" >
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-button color="danger"  expand="block" (click)="closePopover('delete')">
+                Delete<ion-icon slot="end" name="trash"></ion-icon>
+              </ion-button>   
+            </ion-col>
+            <ion-col>
+              <ion-button color="success"  expand="block" (click)="closePopover('cancel')">
+                Cancel<ion-icon slot="end" name="close"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item-divider>
+  </ion-card>
+</div>
+

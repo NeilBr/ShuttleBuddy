@@ -24,18 +24,15 @@
       <ion-fab-button (click)="startDrawingRoute()"><ion-icon name="add"></ion-icon></ion-fab-button>
       <ion-fab-list side="bottom">
         <ion-fab-button [hidden]="!currentRoute" (click)="finishRoute()">
-          <ion-icon name="save"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button *ngIf="routes.length > 0 && !currentRoute" (click)="clearAllRoutes()">
-          <ion-icon name="trash"></ion-icon>
+          <ion-icon color="primary" name="save"></ion-icon>
         </ion-fab-button>
         <ion-fab-button [hidden]="!currentRoute" (click)="cancelRoute()">
-          <ion-icon name="trash"></ion-icon>
+          <ion-icon color="primary" name="trash"></ion-icon>
         </ion-fab-button>
       </ion-fab-list>
     </ion-fab>
 
-    <div *ngIf="!viewShuttlesRoute">
+    <div class="searchBar" *ngIf="!viewShuttlesRoute">
       <ion-searchbar #locationSearchAdmin color="light" 
       placeholder="Search Places..."
       [(value)]="searchString"

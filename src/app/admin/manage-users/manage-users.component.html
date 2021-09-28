@@ -1,22 +1,41 @@
 <ion-content [fullscreen]="true">   
   <app-menu></app-menu>
-<ion-card>
-  <ion-grid *ngIf="!(loading | async)" class="ion-margin">
-    <ion-row>
-      <ion-col>ID</ion-col>
-      <ion-col>Name</ion-col>
-      <ion-col>Role</ion-col>
-      <ion-col>Actions</ion-col>
-    </ion-row>
-    <ion-row *ngFor="let user of users; index as i">
-      <ion-col>{{ user.id }}</ion-col>
-      <ion-col>{{ user.username }}</ion-col>
-      <ion-col>{{ user.role }}</ion-col>
-      <ion-col></ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-card>
-<ion-card>
-  
-</ion-card>
+  <div *ngIf="!(loading | async)">
+      <div>
+        <h1 [style]="!showMenu? 'margin-left: 75px' : 'margin-left: 15px'">Users
+          <ion-button (click)="openCreateUser()" style="float: right; margin-right: 10px;">
+           <ion-icon slot="start" name="add"></ion-icon>
+           Add User
+          </ion-button>
+        </h1>
+      </div>
+      <ion-card>
+        <ion-grid *ngIf="!(loading | async)" class="ion-margin">
+          <ion-row>
+            <ion-item-divider color="primary">
+              <ion-col>ID</ion-col>
+              <ion-col>Name</ion-col>
+              <ion-col>Role</ion-col>
+              <ion-col>Actions</ion-col>
+            </ion-item-divider>
+          </ion-row>
+          
+            <ion-row *ngFor="let user of users; index as i">
+              <ion-item-divider color="secondary" >
+                <ion-col style="margin: auto;">{{ user.id }}</ion-col>
+                <ion-col style="margin: auto;">{{ user.username }}</ion-col>
+                <ion-col style="margin: auto;">{{ user.role }}</ion-col>
+                <ion-col style="margin: auto;">
+                  <ion-button color="danger" (click)="openDeleteUser(user)" [disabled]="isCurrentUser(user)">
+                    <ion-icon name="trash"></ion-icon>
+                  </ion-button>
+                  <ion-button color="success" (click)="openEditUser(user)" [disabled]="isCurrentUser(user)">
+                    <ion-icon name="pencil"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-item-divider>
+            </ion-row>   
+        </ion-grid>
+      </ion-card>
+  </div>
 </ion-content>

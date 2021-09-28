@@ -25,8 +25,7 @@ import { ScheduleCardComponent } from './schedule/schedule-card/schedule-card.co
     ManageRoutesComponent,
     ManageUsersComponent,
     MenuComponent,
-    ScheduleComponent,
-    ScheduleCardComponent,
+    
   ],
   imports: [
     CommonModule,

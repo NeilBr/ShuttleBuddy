@@ -14,6 +14,16 @@ export class UserService {
   async getAllUsers() :Promise<User[]>{
     return await this.http.get<User[]>(environment.serverUrl + 'users', this.getHeaders()).toPromise();
   }
+  
+
+  async deleteUser(id) :Promise<User>{
+    return await this.http.delete<User>(environment.serverUrl + 'users/' +  id, this.getHeaders()).toPromise();
+  }
+
+  async saveUser(user) :Promise<User>{
+    console.log(user);
+    return await this.http.post<User>(environment.serverUrl + 'users', user, this.getHeaders()).toPromise();
+  }
 
   private getHeaders() {
     const httpOptions = {

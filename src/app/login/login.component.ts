@@ -11,8 +11,8 @@ import { CredentialsService } from '../authentication/credentials.service';
 export class LoginComponent implements OnInit {
   error: string | undefined;
   isLoading = false;
-  username = 'NeilB';
-  password = '123456';
+  username = '';
+  password = '';
 
   constructor(
     private router: Router,
@@ -29,7 +29,6 @@ export class LoginComponent implements OnInit {
         username: this.username,
         password: this.password
       }).then(async (res: any) => {
-        console.log(res);
         if (res) {
           switch (res.role){
             case 'Admin':{

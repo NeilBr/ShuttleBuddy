@@ -21,7 +21,8 @@ export class DriverWizardPage implements OnInit {
 
   shuttleId = 0;
   routeId = 0;
-  mockRouteId = 0;
+  mockRouteId = null;
+  isMock = false;
 
   constructor(
     private mapSocket: MapSocket,
@@ -47,7 +48,7 @@ export class DriverWizardPage implements OnInit {
     await this.credentialsService.setShuttleDetails({
       shuttleId: this.shuttleId,
       routeId: this.routeId,
-      mockRouteId: this.mockRouteId
+      mockRouteId: this.isMock? this.routeId : null
     });
 
     this.navController.navigateRoot(['/driver/navigate'])

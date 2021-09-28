@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { MenuService } from 'src/app/admin/menu/menu.service';
 import { CredentialsService } from 'src/app/authentication/credentials.service';
 import { ScheduleService } from 'src/app/services/schedule.service';
-import { MenuService } from '../menu/menu.service';
 
 @Component({
-  selector: 'app-schedule',
-  templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.scss'],
+  selector: 'app-user-schedule',
+  templateUrl: './user-schedule.component.html',
+  styleUrls: ['./user-schedule.component.scss'],
 })
-export class ScheduleComponent implements OnInit {
-
+export class UserScheduleComponent implements OnInit {
   loading = new BehaviorSubject(false); 
   schedules: any;
   originalSchedules: any;
   showMenu = false;
+  roleType = ''
   filter = {
     days:[],
     search: ''
@@ -24,8 +24,10 @@ export class ScheduleComponent implements OnInit {
     private scheduleService: ScheduleService,
     private credentialsService: CredentialsService
     ) {
-      if (this.credentialsService.credentials.role === 'Admin'){
-        this.showMenu = true;
+      if (this.credentialsService.credentials.role === 'Driver'){
+        this.roleType = "Driver";
+      }else{
+        this.roleType = "User";
       }
     }
 

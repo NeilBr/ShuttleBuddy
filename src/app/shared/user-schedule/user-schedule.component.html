@@ -1,16 +1,15 @@
 <ion-content >  
-  <ion-toolbar *ngIf="!showMenu" color="transparent">  
+  <ion-toolbar color="transparent">  
     <ion-buttons slot="start">  
       <ion-menu-button color="light"></ion-menu-button>   
     </ion-buttons>  
   </ion-toolbar>  
-  <app-menu *ngIf="showMenu" ></app-menu>
   <ion-content *ngIf="!(loading | async)">
-    <div [style]="showMenu? 'display: flex; flex-wrap: wrap;': ''">
+    <div>
       <div style="flex: 1;">
-        <h1 [style]="showMenu? 'margin-left: 75px' : 'margin-left: 15px'">Schedule</h1>
+        <h1 [style]="'margin-left: 15px'">Schedule</h1>
       </div>
-      <div class="{{showMenu? 'admin-schedule': 'user-schedule'}}">
+      <div class="user-schedule">
         <ion-searchbar color="dark" class="searchbar background-white" debounce="500" (ionChange)="setScheduleFilter('search', $event.detail.value)"></ion-searchbar>
         <ion-item *ngIf="showMenu" class="filter-select">
             <ion-icon name="options"></ion-icon>
@@ -25,7 +24,7 @@
               <ion-select-option value="Saturday">Saturday</ion-select-option>
             </ion-select>
         </ion-item>
-        <ion-item *ngIf="!showMenu" lines="inset" >
+        <ion-item lines="inset" >
           <!-- <ion-icon name="options"></ion-icon> -->
           <ion-label >Filter By Days</ion-label>
           <ion-select  slot="end" multiple="true" [(value)]="filter.days" (ionChange)="setScheduleFilter('days', $event.detail.value)">
@@ -40,8 +39,8 @@
       </ion-item>
       </div>
     </div>
-    <div [class]="!getIsOpen() && showMenu ? 'menu-open' : ''">
-      <schedule-card  *ngFor="let route of schedules.routes" [route]="route"></schedule-card>
+    <div>
+      <schedule-card *ngFor="let route of schedules.routes" [route]="route"></schedule-card>
     </div>
   </ion-content>
 </ion-content>

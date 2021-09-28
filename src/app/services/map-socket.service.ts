@@ -21,6 +21,7 @@ export class MapSocket {
   sendPosition(shuttleLocation: any){
     shuttleLocation.clientID = this.socket.ioSocket.id;
     this.socket.emit('shuttleLocation', JSON.stringify(shuttleLocation));
+    
   }
  
 

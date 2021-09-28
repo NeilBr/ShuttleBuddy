@@ -30,7 +30,7 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-button color="success"  expand="block" (click)="closePopover('save')">Save <ion-icon slot="end" name="save"></ion-icon></ion-button>   
+            <ion-button color="success"  expand="block" (click)="closePopover('save')" [disabled]="!isValid()">Save <ion-icon slot="end" name="save"></ion-icon></ion-button>   
           </ion-col>
           <ion-col>
             <ion-button color="danger"  expand="block" (click)="closePopover('cancel')">Cancel <ion-icon slot="end" name="close"></ion-icon></ion-button>

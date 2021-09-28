@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuController, NavController } from '@ionic/angular';
 import { AuthenticationService } from '../authentication/authentication.service';
 
@@ -13,6 +14,7 @@ export class DriverPage implements OnInit {
   constructor(
     private menu: MenuController,
     private authService: AuthenticationService,
+    private router: Router,
     private navController: NavController) { }
 
   ngOnInit() {
@@ -36,7 +38,12 @@ export class DriverPage implements OnInit {
   
   goToSchedule(){
     this.menu.close();
-    this.navController.navigateRoot(['/user/schedule']);
+    this.navController.navigateRoot(['/driver/schedule']);
+  }
+
+  goToHome(){
+    this.menu.close();
+    this.navController.navigateRoot(['/driver/navigate']);
   }
 
   logout(){
@@ -44,4 +51,7 @@ export class DriverPage implements OnInit {
     this.navController.navigateRoot(['/login']);
   }
 
+  isHome(){
+    return this.router.url.indexOf('navigate') > -1;
+  }
 }

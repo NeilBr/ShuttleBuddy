@@ -8,6 +8,10 @@ import { LocationModalComponent } from './location-modal/location-modal.componen
 import { RouteModalComponent } from './route-modal/route-modal.component';
 import { DriverMapComponent } from './driver-map/driver-map.component';
 import { UserMapComponent } from './user-map/user-map.component';
+import { UserModalComponent } from './user-modal/user-modal.component';
+import { ScheduleCardComponent } from '../admin/schedule/schedule-card/schedule-card.component';
+import { ScheduleComponent } from '../admin/schedule/schedule.component';
+import { UserScheduleComponent } from './user-schedule/user-schedule.component';
 
 const COMPONENTS: any[] = [
   MapComponent, 
@@ -15,7 +19,11 @@ const COMPONENTS: any[] = [
   ShellComponent, 
   LocationModalComponent, 
   RouteModalComponent,
-  UserMapComponent
+  UserMapComponent,
+  UserModalComponent,
+  ScheduleComponent,
+  ScheduleCardComponent,
+  UserScheduleComponent
 ];
 
 @NgModule({

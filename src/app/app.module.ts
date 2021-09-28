@@ -14,6 +14,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { MapSocket } from './services/map-socket.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// const config: SocketIoConfig = { url: 'http://ec2-54-171-120-200.eu-west-1.compute.amazonaws.com:3001/map-socket', options: {} };
 const config: SocketIoConfig = { url: 'http://localhost:3001/map-socket', options: {} };
 
 @NgModule({

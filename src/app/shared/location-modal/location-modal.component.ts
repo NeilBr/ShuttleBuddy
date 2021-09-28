@@ -24,4 +24,10 @@ export class LocationModalComponent implements OnInit {
     this.popoverController.dismiss({action, location: this.location}); 
   }
 
+
+  isValid(){
+    return this.location.name.trim() !== '' &&
+    this.location.description.trim() !== '' &&
+    this.location.locationType.trim() !== '';
+  }
 }

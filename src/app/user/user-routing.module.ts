@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ScheduleComponent } from '../admin/schedule/schedule.component';
-import { DriverNavigateComponent } from '../driver/driver-navigate/driver-navigate.component';
+import { UserScheduleComponent } from '../shared/user-schedule/user-schedule.component';
 import { UserHomeComponent } from './user-home/user-home.component';
 
 import { UserPage } from './user.page';
@@ -17,7 +16,7 @@ const routes: Routes = [
       },
       {
         path: 'schedule',
-        component: ScheduleComponent,
+        component: UserScheduleComponent,
       },
     ]
   }

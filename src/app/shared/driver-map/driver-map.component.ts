@@ -9,6 +9,7 @@ import { Location } from '../models/location';
 import { LocationService } from 'src/app/services/location.service';
 import { MapStyle } from '../consts';
 import { Router } from '@angular/router';
+import { Geolocation } from '@capacitor/geolocation';
 
 
 @Component({
@@ -49,14 +50,17 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    const details = this.credentialsService.getShuttleDetails()
+    const details = this.credentialsService.getShuttleDetails();
+    console.log(details);
     this.routeId = details.routeId; 
     this.shuttleId = details.shuttleId; 
     this.mockRouteId = details.mockRouteId; 
-    if(this.routeId && this.shuttleId && this.mockRouteId){
-      this.routesService.getRoutes(this.mockRouteId).then((route)=>{
-        this.mockTravel = route;
-      });
+    if(this.routeId && this.shuttleId){
+      if(this.mockRouteId){
+        this.routesService.getRoutes(this.mockRouteId).then((route)=>{
+          this.mockTravel = route;
+        });
+      }
     }else{
       this.router.navigate(['/driver/wizard']);
     }
@@ -81,7 +85,11 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
       mapTypeControl: false,
     });
     // TODO: Center map on geolocation or center of all markers
-
+    if(!this.mockRouteId){
+      await Geolocation.getCurrentPosition().then(resp => {
+        this.map.setCenter({lat: resp.coords.latitude, lng:  resp.coords.longitude});
+      });
+    } 
   }
 
   async startRoute(){
@@ -114,37 +122,41 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
         this.mockTravelIndex = 0;
         this.travelRoutePolyline.setPath(JSON.parse(this.travelRoute.pathPoints));
         this.travelRoutePolyline.setMap(this.map);
-        this.startBroadcast();
       }else{
         this.startRoute();
       }
+      this.startBroadcast();
     });
-    
   }
 
   }
 
   startBroadcast(){
-    this.mockTravelPath = JSON.parse(this.mockTravel.pathPoints);
 
-    // await Geolocation.watchPosition({}, position =>{
-    //   this.mapSocket.sendPosition(position);
-    // });
-    this.cronJob = new CronJob('*/2 * * * * *', async () => {
-      try {
-        
-        this.redrawMarkerChange();
-        this.redrawPolylineRoute();
-        
-      } catch (e) {
-        console.error(e);
+    if(this.mockRouteId){
+      this.mockTravelPath = JSON.parse(this.mockTravel.pathPoints);
+      this.cronJob = new CronJob('*/2 * * * * *', async () => {
+        try {
+          
+          this.redrawMarkerChange(this.mockTravelPath[this.mockTravelIndex]);
+          this.redrawPolylineRoute();
+          
+        } catch (e) {
+          console.error(e);
+        }
+      });
+      
+      // Start job
+      if (!this.cronJob.running) {
+        this.cronJob.start();
       }
-    });
-    
-    // Start job
-    if (!this.cronJob.running) {
-      this.cronJob.start();
+    }else{
+        Geolocation.watchPosition({}, (position) =>{
+        this.redrawMarkerChange({lat: position.coords.latitude, lng:  position.coords.longitude});
+        this.redrawPolylineRoute();
+      });
     }
+    
   }
 
   async redrawPolylineRoute(){
@@ -159,11 +171,6 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
     });
     newpath.splice(1, closestIndex );
     newpath[0] = this.curLocation;
-    // const start = new google.maps.LatLng(+newpath[0].lng , +newpath[0].lng);
-    // const end = new google.maps.LatLng(+newpath[1].lng , +newpath[1].lng);
-
-    // this.heading = google.maps.geometry.spherical.computeHeading(start, end);
-    // console.log(newpath);
     this.travelRoutePolyline.setPath(newpath);
   }
   
@@ -179,8 +186,8 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
     return d;
   }
 
-  redrawMarkerChange(){
-    const newPos = this.mockTravelPath[this.mockTravelIndex]
+  redrawMarkerChange(currentLocation){
+    const newPos = currentLocation;
     this.mapSocket.sendPosition({
       shuttleId: this.shuttleId,
       position: newPos,

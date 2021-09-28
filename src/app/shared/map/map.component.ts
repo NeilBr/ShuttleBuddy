@@ -111,12 +111,12 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   async initMap(){
- 
-    console.log(this.page);
-    this.map = new google.maps.Map(document.getElementById(this.page), {
+     this.map = new google.maps.Map(document.getElementById(this.page), {
       zoom: 15,
       center: { lat:-34.00041952493058, lng: 25.666596530421096},
-      styles: MapStyle 
+      styles: MapStyle ,
+      mapTypeControl: false,
+      fullscreenControl: false,
     });
 
     this.map.addListener("mousedown", () => {

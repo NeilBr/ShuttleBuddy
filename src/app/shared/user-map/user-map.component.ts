@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { PopoverController, NavController } from '@ionic/angular';
+import { Geolocation } from '@capacitor/geolocation';
+import { PopoverController } from '@ionic/angular';
 import { RandomColor } from 'angular-randomcolor';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
@@ -90,8 +91,10 @@ export class UserMapComponent implements OnInit, AfterViewInit {
         this.endFilter(); 
       }
     });
-    
-    // TODO: Center map on geolocation 
+
+   await Geolocation.getCurrentPosition().then(resp => {
+      this.map.setCenter({lat: resp.coords.latitude, lng:  resp.coords.longitude});
+    });
 
   }
 
