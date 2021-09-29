@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { UserScheduleComponent } from '../shared/user-schedule/user-schedule.component';
+import { UserScheduleComponent } from './user-schedule/user-schedule.component';
 import { UserHomeComponent } from './user-home/user-home.component';
 
 import { UserPage } from './user.page';

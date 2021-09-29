@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { UserScheduleComponent } from '../shared/user-schedule/user-schedule.component';
+import { UserScheduleComponent } from '../user/user-schedule/user-schedule.component';
 import { DriverNavigateComponent } from './driver-navigate/driver-navigate.component';
 import { DriverWizardPage } from './driver-wizard/driver-wizard.page';
 

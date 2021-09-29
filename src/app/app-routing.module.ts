@@ -22,7 +22,7 @@ const routes: Routes = [
   {
     path: 'driver',
     loadChildren: () => import('./driver/driver.module').then( m => m.DriverPageModule),
-    canActivate:[AuthenticationGuard],
+    canActivate:[AuthenticationGuard, RoleGuardService],
     data:{expectedRole: 'Driver'}
   },
   {
@@ -31,14 +31,11 @@ const routes: Routes = [
     canActivate:[AuthenticationGuard],
     data:{expectedRole: 'User'}
   },
-
-
-
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes)
   ],
   exports: [RouterModule]
 })
