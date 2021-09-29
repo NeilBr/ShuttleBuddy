@@ -48,7 +48,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   setScheduleFilter(setting, filter){
-    console.log(this.filter);
+    filter = filter.detail.value
     setting === 'days'? this.filter.days = filter: filter === null? this.filter.search = '' : this.filter.search = filter ;
     this.filterSchedule();
   }

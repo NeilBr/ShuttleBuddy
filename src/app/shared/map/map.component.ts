@@ -750,7 +750,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.finalStop= null;
   }
 
-  searchLocations(search: string){
+  searchLocations(search){
+    search = search.detail.value;
     if(search.trim()!== ''){
       this.searchString = search;
       this.searchingLocations = true;
@@ -785,4 +786,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.endFilter();
   }
 
+  setStartTime(index, event){
+    this.startTimes[index] = event.details.value;
+  }
 }

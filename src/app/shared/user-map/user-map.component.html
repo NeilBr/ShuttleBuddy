@@ -5,9 +5,9 @@
     <div *ngIf="!viewShuttlesRoute">
       <ion-searchbar #locationSearch color="light" 
       placeholder="Search Places..."
-      [(value)]="searchString"
+      value="{{searchString}}"
         debounce="500" (ionFocus)="startFilter()"
-        (ionChange)="searchLocations($event.detail.value)">
+        (ionChange)="searchLocations($event)">
       </ion-searchbar>
       <ion-card class="searchCard" *ngIf="searchingLocations">
         <ion-list>

@@ -1,4 +1,3 @@
-import { ScheduleComponent } from './schedule/schedule.component';
 import { ManageUsersComponent } from './manage-users/manage-users.component';
 import { ManageRoutesComponent } from './manage-routes/manage-routes.component';
 import { ManageLocationsComponent } from './manage-locations/manage-locations.component';
@@ -13,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminComponent } from './admin.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MenuComponent } from './menu/menu.component';
-import { ScheduleCardComponent } from './schedule/schedule-card/schedule-card.component';
+import { ScheduleComponent } from './schedule/schedule.component';
 
 
 @NgModule({
@@ -24,8 +23,8 @@ import { ScheduleCardComponent } from './schedule/schedule-card/schedule-card.co
     ManageLocationsComponent,
     ManageRoutesComponent,
     ManageUsersComponent,
+    ScheduleComponent,
     MenuComponent,
-    
   ],
   imports: [
     CommonModule,
@@ -34,6 +33,7 @@ import { ScheduleCardComponent } from './schedule/schedule-card/schedule-card.co
     IonicModule,
     FormsModule,
     NgxDatatableModule,
-  ]
+  ],
+  
 })
 export class AdminModule { }

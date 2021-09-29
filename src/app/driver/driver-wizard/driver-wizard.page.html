@@ -2,19 +2,19 @@
   <ion-card>
     <ion-item>
       <ion-label color="primary" position="floating">Shuttle Identifier</ion-label>
-      <ion-input placeholder="Shuttle Identifier"  (ionChange)="shuttleId = $event.detail.value">
+      <ion-input placeholder="Shuttle Identifier"  (ionChange)="setShuttleID($event)">
       </ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label color="primary" position="floating">Select the route you will be travelling</ion-label>
-      <ion-select placeholder="Select Route..." *ngIf="!(isLoading | async)" (ionChange)="routeId = $event.detail.value">
+      <ion-select placeholder="Select Route..." *ngIf="!(isLoading | async)" (ionChange)="setRouteID($event)">
         <ion-select-option *ngFor="let route of allRoutes"  value="{{route.id}}">{{route.name}}</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
       <ion-label color="primary">Is mock driver</ion-label>
-        <ion-toggle (ionChange)="isMock = $event.detail.value"></ion-toggle>
+        <ion-toggle (ionChange)="setIsMock($event)"></ion-toggle>
     </ion-item>
   </ion-card>
   <div style="padding: 32px">

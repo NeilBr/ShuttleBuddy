@@ -11,7 +11,7 @@
       <ion-card *ngFor="let startTime of startTimes; let i = index;">
         <ion-item  lines="full">
           <ion-label position="stacked">Start time</ion-label>
-          <ion-input type="time" value="{{startTimes[i]}}" (ionChange)="startTimes[i] = $event.detail.value" required></ion-input>
+          <ion-input type="time" value="{{startTimes[i]}}" (ionChange)="setStartTime(i,$event)" required></ion-input>
         </ion-item>
       </ion-card>
       <ion-button style="padding-left: 10px; color: white;" color="secondary" (click)="addStartTime()">
@@ -35,9 +35,9 @@
     <div class="searchBar" *ngIf="!viewShuttlesRoute">
       <ion-searchbar #locationSearchAdmin color="light" 
       placeholder="Search Places..."
-      [(value)]="searchString"
+      value="{{searchString}}"
         debounce="500" (ionFocus)="startFilter()"
-        (ionChange)="searchLocations($event.detail.value)">
+        (ionChange)="searchLocations($event)">
       </ion-searchbar>
       <ion-card class="searchCard" *ngIf="searchingLocations">
         <ion-list>
@@ -49,7 +49,7 @@
       </ion-card>
     </div>
 
-    <div *ngIf="viewShuttlesRoute && !(loading | async)">
+    <div *ngIf="viewShuttlesRoute && !(loadingShuttle | async)">
       <ion-card class="searchCard">
        <ion-card-header color="dark" >
         <ion-spinner *ngIf="(loadingShuttle | async)"></ion-spinner>

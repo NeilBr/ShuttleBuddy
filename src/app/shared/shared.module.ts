@@ -10,7 +10,6 @@ import { DriverMapComponent } from './driver-map/driver-map.component';
 import { UserMapComponent } from './user-map/user-map.component';
 import { UserModalComponent } from './user-modal/user-modal.component';
 import { ScheduleCardComponent } from '../admin/schedule/schedule-card/schedule-card.component';
-import { ScheduleComponent } from '../admin/schedule/schedule.component';
 import { UserScheduleComponent } from './user-schedule/user-schedule.component';
 
 const COMPONENTS: any[] = [
@@ -21,7 +20,6 @@ const COMPONENTS: any[] = [
   RouteModalComponent,
   UserMapComponent,
   UserModalComponent,
-  ScheduleComponent,
   ScheduleCardComponent,
   UserScheduleComponent
 ];

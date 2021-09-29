@@ -10,12 +10,12 @@
 
     <ion-item  lines="full">
       <ion-label position="floating">User Name</ion-label>
-      <ion-input type="text" [(value)]="user.username" (ionChange)="user.username = $event.detail.value" required [disabled]="userAction === 'View'"></ion-input>
+      <ion-input type="text" value="{{user.username}}" (ionChange)="setUsername($event)" required></ion-input>
     </ion-item>
     
     <ion-item  lines="full">
       <ion-label position="floating">User Role</ion-label>
-      <ion-select placeholder="Select One" [(value)]="user.role" (ionChange)="user.role = $event.detail.value" [disabled]="userAction === 'View'">
+      <ion-select placeholder="Select One" value="{{user.role}}" (ionChange)="setRole($event)">
         <ion-select-option value="Admin">Admin</ion-select-option>
         <ion-select-option value="User">User</ion-select-option>
         <ion-select-option value="Driver">Driver</ion-select-option>
@@ -46,12 +46,12 @@
 
     <ion-item  lines="full">
       <ion-label position="floating">User Name</ion-label>
-      <ion-input type="text" [(value)]="user.username" (ionChange)="user.username = $event.detail.value" required [disabled]="userAction === 'View'"></ion-input>
+      <ion-input type="text" value="{{user.username}}" (ionChange)="setUsername($event)" required></ion-input>
     </ion-item>
     
     <ion-item  lines="full">
       <ion-label position="floating">User Role</ion-label>
-      <ion-select placeholder="Select One" [(value)]="user.role" (ionChange)="user.role = $event.detail.value" [disabled]="userAction === 'View'">
+      <ion-select placeholder="Select One" value="{{user.role}}" (ionChange)="setRole($event)">
         <ion-select-option value="Admin">Admin</ion-select-option>
         <ion-select-option value="User">User</ion-select-option>
         <ion-select-option value="Driver">Driver</ion-select-option>
@@ -60,11 +60,11 @@
 
     <ion-item  lines="full">
       <ion-label position="floating">Password</ion-label>
-      <ion-input type="text" [(value)]="user.password" (ionChange)="user.password = $event.detail.value" required [disabled]="userAction === 'View'"></ion-input>
+      <ion-input type="text" value="{{user.password}}" (ionChange)="setPassword($event)" required></ion-input>
     </ion-item>
     <ion-item  lines="full">
       <ion-label position="floating">Confirm Password</ion-label>
-      <ion-input type="text" [(value)]="confirmPassword" (ionChange)="confirmPassword = $event.detail.value" required [disabled]="userAction === 'View'"></ion-input>
+      <ion-input type="text" value="{{confirmPassword}}" (ionChange)="setConfirmPassword($event)" required ></ion-input>
     </ion-item>
 
     <ion-item-divider color="secondary" >

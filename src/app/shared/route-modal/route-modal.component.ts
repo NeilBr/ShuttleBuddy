@@ -54,4 +54,17 @@ export class RouteModalComponent implements OnInit {
     this.route.stopLocationID !== null &&
     this.route.startLocationID !== this.route.stopLocationID;
   }
+
+  setStartLocation(event){
+    this.route.startLocationID = event.detail.value;
+  }
+  setStopLocation(event){
+    this.route.stopLocationID = event.detail.value;
+  }
+  setDays(event){
+    this.route.dayOfTheWeek = event.detail.value;
+  }
+  setName(event){
+    this.route.name = event.detail.value;
+  }
 }

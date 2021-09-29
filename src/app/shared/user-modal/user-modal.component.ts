@@ -31,4 +31,21 @@ export class UserModalComponent implements OnInit {
   isEditValid(){
     return this.user.role != '' && this.user.username.trim() != '';
   }
+
+  setPassword(event){
+    this.user.password = event.detail.value;
+  }
+
+  setRole(event){
+    this.user.role = event.detail.value;
+  }
+  
+  setUsername(event){
+    this.user.username = event.detail.value;
+  }
+
+  setConfirmPassword(event){
+    this.confirmPassword = event.detail.value;
+  }
+  
 }

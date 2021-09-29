@@ -224,7 +224,8 @@ export class UserMapComponent implements OnInit, AfterViewInit {
   }
 
 
-  searchLocations(search: string){
+  searchLocations(search){
+    search = search.detail.value;
     if(search.trim()!== ''){
       this.searchString = search;
       this.searchingLocations = true;

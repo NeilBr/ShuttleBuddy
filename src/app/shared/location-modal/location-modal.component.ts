@@ -30,4 +30,16 @@ export class LocationModalComponent implements OnInit {
     this.location.description.trim() !== '' &&
     this.location.locationType.trim() !== '';
   }
+
+  setName(event){
+    this.location.name = event.detail.value;
+  }
+  
+  setDescription(event){
+    this.location.description = event.detail.value
+  }
+
+  setType(event){
+    this.location.locationType = event.detail.value
+  }
 }

@@ -19,7 +19,7 @@ export class DriverWizardPage implements OnInit {
 
   allRoutes: Route[];
 
-  shuttleId = 0;
+  shuttleId = '';
   routeId = 0;
   mockRouteId = null;
   isMock = false;
@@ -54,5 +54,16 @@ export class DriverWizardPage implements OnInit {
     this.navController.navigateRoot(['/driver/navigate'])
   }
 
+  setShuttleID(event){
+    this.shuttleId = event.detail.value;
+  }
+
+  setRouteID(event){
+    this.routeId = event.detail.value;
+  }
+
+  setIsMock(event){
+    this.isMock = event.detail.value;
+  }
 
 }
