@@ -38,7 +38,14 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
 
   curLocation: any;
   locations: Location[];
+  
+  ////////////////////////////////////////////////////////////
 
+  // This component is a stripped down version of map.component.ts
+  // Methods are commented there
+
+  ///////////////////////////////////////////////////////////
+  
   constructor(
     private locationService: LocationService,
     private routesService: RoutesService,
@@ -48,7 +55,8 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
   ) { 
     
   }
-
+  
+  // gets all related route details for shuttle drive
   ngOnInit() {
     const details = this.credentialsService.getShuttleDetails();
     console.log(details);
@@ -131,6 +139,7 @@ export class DriverMapComponent implements OnInit, AfterViewInit {
 
   }
 
+  // starts the boradcast of location to the socket
   startBroadcast(){
 
     if(this.mockRouteId){

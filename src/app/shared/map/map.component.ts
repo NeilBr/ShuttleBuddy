@@ -55,7 +55,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   newRouteStops = [] as routeStops[];
 
   currentRoute: google.maps.Polyline;
-  curRoutePoints = [];
+  curRoutePoints = [] as google.maps.LatLng[];
+  lastPointLocation = false;
   routes = [];
 
   searchingLocations = false;
@@ -82,9 +83,9 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.locationMarkers = []; 
     this.locations = [];
     this.shuttleMarkers = [];
-
   }
 
+  // checks which page the admin is on and sets up the map accordingly 
   setMapDataForPage(){
     switch (this.page){
       case 'locations':{
@@ -110,6 +111,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // google maps initialisation
   async initMap(){
      this.map = new google.maps.Map(document.getElementById(this.page), {
       zoom: 15,
@@ -126,11 +128,6 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     });
     
-    // TODO: Center map on geolocation 
-    // let marker = new google.maps.Marker({
-    //   position: { lat:-33.94719166680535, lng: 25.54426054343095},
-    //   title: "Hello World!",
-    // });
   }
 
   initRoutesPage(){
@@ -138,6 +135,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.setUpExistingRoutes()
   }
 
+  // gets the routes from the database and draws them onto the map
   setUpExistingRoutes(){
     this.routesService.getAllRoutes().then((routes)=>{
       routes.forEach((route)=>{
@@ -146,7 +144,6 @@ export class MapComponent implements OnInit, AfterViewInit {
           strokeOpacity: 1.0,
           strokeWeight: 5,
         });
-        console.log(route);
         curRoutePolyline.setPath(JSON.parse(route.pathPoints));
         curRoutePolyline.setMap(this.map);
         curRoutePolyline.addListener("mouseover", ($event) => {
@@ -167,14 +164,15 @@ export class MapComponent implements OnInit, AfterViewInit {
     
   }
   
+  // listen to the websocket for incomming shuttle data
   listenToSocket(){
-    
     this.mapSocket.shuttleLocationUpdates.subscribe((shuttleLocations) =>{
-      console.log('Listening');
       this.redrawShuttleLocations(shuttleLocations);
     });
   }
 
+  // this clears the shuttle markers and updates the positions to the 
+  // new ones recieved from   
   async redrawShuttleLocations(shuttleLocations){
     this.clearShuttleMarkers();
     await shuttleLocations.forEach((shuttleLocation) => {
@@ -210,6 +208,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
   
+  // gets and draws the locations markers on the map with on clicks for routes page 
   async createLocationsForRoutes(){
     this.locations = await this.locationService.getAllLocations();
     this.locations.forEach(location => {
@@ -234,6 +233,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     });   
   }
 
+  // gets and draws the locations markers on the map 
+  // when drawing a new route so that the on click is updated 
   drawLocationsForDrawRoute(){
     this.clearMarkers();
     this.locations.forEach(location => {
@@ -259,7 +260,8 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.locationMarkers.push(newMarker);
     });   
   }
-
+  
+  // gets and draws the locations markers on the map with on clicks for locations page 
   async createLocations(){
     this.locations = await this.locationService.getAllLocations();
     this.locations.forEach(location => {
@@ -286,10 +288,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   }
 
-  setDrawType(type: string){
-    this.drawType = type;
-  }
-
+  // show popup for new location
   drawToStop($event){
     let newMarkernew = new google.maps.Marker({
       position: $event.latLng,
@@ -299,12 +298,13 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     this.presentLocationPopover($event, 'createLocation', newMarkernew);
   }
-
+  
+  // show popup for new route
   drawToRoute($event){
-    // TODO: add error display for adding point to route before route started
     this.currentRoute ? this.addPointToRoute($event) : this.startRoute($event);
   }
 
+  // add location to route when drawing a new route and location icon is clicked
   addLocationToNewRoute(location: Location){
     this.newRouteStops.push({
       locationID:location.id,
@@ -318,6 +318,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // initialise vars for new route to start drawing
   startRoute(location: Location){
     this.currentRoute = new google.maps.Polyline({
       strokeColor: RandomColor.generateColor(),
@@ -333,11 +334,13 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.addLocationPointToRoute(location);
   }
 
+  // add location co-ords to route for poly line on map
   async addLocationPointToRoute(location: Location){
     await this.curRoutePoints.push(new google.maps.LatLng(+location.latitude, +location.longitude));
     this.currentRoute.setPath(this.curRoutePoints);
   }
-
+  
+  // add location co-ords to route for poly line on map
   addPointToRoute($event){
     this.curRoutePoints.push($event.latLng);
     this.currentRoute.setPath(this.curRoutePoints);
@@ -364,6 +367,7 @@ export class MapComponent implements OnInit, AfterViewInit {
    
   }
 
+  // save new route and re initialise values
   async finishRoute(){
    
     this.populateNewRouteForSave();
@@ -382,6 +386,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     
   }
 
+  // cancel the new drawn route and re initialise values
   cancelRoute(){
     this.currentRoute.setMap(null);
     this.clearMarkers();
@@ -392,13 +397,6 @@ export class MapComponent implements OnInit, AfterViewInit {
       this.currentRoute = null;
       this.newRoute = null;
       this.newRouteStops = []; 
-  }
-
-  clearAllRoutes(){
-    this.routes.forEach((route : google.maps.Polyline) => {
-      route.setMap(null);
-    });
-    this.routes = [];
   }
 
   async presentLocationPopover(location: any, eventType: string, googleObject) {
@@ -478,6 +476,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         break;
       }
       default: {
+        this.cancelRoute();
         break;
       }
       
@@ -555,6 +554,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // remove the new location icon if new location cancelled 
   removeGoogleObject(eventType, googleObject){
     switch (eventType){
       case 'createLocation':
@@ -570,10 +570,14 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // handle on click from button
   startDrawingRoute(){
-    this.presentRoutePopover('createRoute', null);
+    if(!this.currentRoute){
+      this.presentRoutePopover('createRoute', null);
+    }
   }
 
+  // clear location markers
   clearMarkers(){
     this.locationMarkers.forEach(marker =>{
       marker.setMap(null);
@@ -581,6 +585,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.locationMarkers = [];
   }
 
+  //clear all shuttle markers
   clearShuttleMarkers(){
     this.shuttleMarkers.forEach(marker =>{
       marker.setMap(null);
@@ -588,6 +593,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.shuttleMarkers = [];
   }
 
+  // forms the new route in the correct data format
   populateNewRouteForSave(){
     this.newRoute.pathPoints = JSON.stringify(this.curRoutePoints); 
     this.newRoute.routeStops = JSON.stringify(this.getRouteStopsIDs());
@@ -596,6 +602,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.newRoute.stopLocationID = this.newRouteStops[this.newRouteStops.length - 1].locationID;
   }
 
+  // gets all id's for new routes stops 
   getRouteStopsIDs(){
     const stops = [];
     this.newRouteStops.forEach((routeStop)   =>{
@@ -604,15 +611,18 @@ export class MapComponent implements OnInit, AfterViewInit {
     return stops;
   }
 
+  // checks if menu is open
   getIsOpen(){
     return this.menuService.menuState;
   }
 
+  // adds start time to new route
   addStartTime(){
     this.startTimes.push('07:00:00'); 
     
   }
   
+  // formats all start times for new route
   getStartTimes(){
 
     let startTimesString = '';
@@ -624,6 +634,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     return startTimesString;
   }
 
+  // draws the polyline route of a selected shuttle
   viewShuttleRoute(shuttle: any){
     this.loadingShuttle.next(true);
     this.routesService.getRoutes(shuttle.routeID).then(route => {
@@ -647,7 +658,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
 
   }
-
+  
+  // redraws the polyline route of a selected shuttle
   async redrawPolylineRoute(){
     let newpath = JSON.parse(this.shuttleTravelRoute.pathPoints);
     let closestIndex = 0;
@@ -666,6 +678,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.setNextStop(JSON.parse(JSON.stringify(newpath)));
   }
   
+  // gets next stop for selected shuttle
   async setNextStop(pathPoints:any[]){
     let returnSchedule = null;
     for(let point of pathPoints) {
@@ -684,6 +697,8 @@ export class MapComponent implements OnInit, AfterViewInit {
       }  
     }
   }
+
+  // calculate the distance between 2 geolocation points
   // https://cloud.google.com/blog/products/maps-platform/how-calculate-distances-map-maps-javascript-api
   haversine_distance(mk1, mk2) {
     var R = 3958.8; // Radius of the Earth in miles
@@ -738,6 +753,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     return this.finalStop.estTime.split(',')[scheduleIndex];
   }
 
+  // stops the selected shuttle view
   stopShuttleView(){
     this.shuttleTravelRoute = null;
     this.viewShuttleLocation= null;
@@ -750,6 +766,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.finalStop= null;
   }
 
+  /// methods to return search items according to filter in search bar
   searchLocations(search){
     search = search.detail.value;
     if(search.trim()!== ''){
@@ -769,7 +786,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   endFilter(){
     this.searchingLocations = this.searchString.trim()!== '';
   }
-
+  
   filterLocations(){
     const newFilter = [];
     this.locations.forEach((location) =>{
@@ -779,14 +796,27 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
     this.filteredLocations = JSON.parse(JSON.stringify(newFilter));
   }
-
+  //////////////////////////////////////////////////////////////////
+  
+  // pans the map to a location
   goToLocation(location: Location){
     this.map.panTo({lat: +location.latitude, lng: +location.longitude});
     this.map.setZoom(19);
     this.endFilter();
   }
 
+  // sets the start time for a new route new start time
   setStartTime(index, event){
     this.startTimes[index] = event.details.value;
+  }
+
+  // undoes the last route point added when creating a route 
+  undoRoutePoint(){
+    this.curRoutePoints.pop();
+    if(this.lastPointLocation){
+      this.lastPointLocation = false;
+      this.newRouteStops.pop();
+    }
+    this.currentRoute.setPath(this.curRoutePoints);
   }
 }

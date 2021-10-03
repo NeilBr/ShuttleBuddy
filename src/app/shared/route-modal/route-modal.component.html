@@ -14,7 +14,7 @@
     
   <ion-item  lines="full">
     <ion-label position="floating">Days the route is active</ion-label>
-    <ion-select placeholder="Select One" value="{{route.dayOfTheWeek}}" (ionChange)="setDays($event)" multiple >
+    <ion-select placeholder="Select One" (ionChange)="setDays($event)" multiple >
       <ion-select-option value="Sunday">Sunday</ion-select-option>
       <ion-select-option value="Monday">Monday</ion-select-option>
       <ion-select-option value="Tuesday">Tuesday</ion-select-option>

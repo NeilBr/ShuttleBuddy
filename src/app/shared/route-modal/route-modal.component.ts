@@ -46,8 +46,8 @@ export class RouteModalComponent implements OnInit {
     });
     return this.locations[foundLocation];
   }
+  
   isValid(){
-    console.log(this.route);
     return this.route.name.trim() !== '' &&
     this.route.dayOfTheWeek.length > 0 &&
     this.route.startLocationID !== null &&

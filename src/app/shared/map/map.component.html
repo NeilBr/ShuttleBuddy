@@ -20,9 +20,12 @@
     </div>
     
 
-    <ion-fab vertical="center" horizontal="end" *ngIf="page === 'routes'"  >
-      <ion-fab-button (click)="startDrawingRoute()"><ion-icon name="add"></ion-icon></ion-fab-button>
+    <ion-fab  vertical="center" horizontal="end" *ngIf="page === 'routes'"  >
+      <ion-fab-button  (click)="startDrawingRoute()"><ion-icon name="add" *ngIf="!currentRoute"></ion-icon><ion-icon name="chevron-down" *ngIf="currentRoute"></ion-icon></ion-fab-button>
       <ion-fab-list side="bottom">
+        <ion-fab-button [hidden]="!currentRoute || curRoutePoints.length < 2" (click)="undoRoutePoint()">
+          <ion-icon color="primary" name="arrow-undo"></ion-icon>
+        </ion-fab-button>
         <ion-fab-button [hidden]="!currentRoute" (click)="finishRoute()">
           <ion-icon color="primary" name="save"></ion-icon>
         </ion-fab-button>

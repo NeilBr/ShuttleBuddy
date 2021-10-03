@@ -25,7 +25,6 @@ export class DriverWizardPage implements OnInit {
   isMock = false;
 
   constructor(
-    private mapSocket: MapSocket,
     private routesService: RoutesService,
     private credentialsService: CredentialsService,
     private navController: NavController
@@ -42,7 +41,6 @@ export class DriverWizardPage implements OnInit {
       this.isLoading.next(false);
     })
   }
-
 
   async startNavigation(){
     await this.credentialsService.setShuttleDetails({

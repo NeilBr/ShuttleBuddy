@@ -51,7 +51,7 @@ export class AdminComponent implements OnInit {
   }
 
   menuOpened() {
-    //code to execute when menu ha opened
+    //code to execute when menu has opened
     this.menuService.setMenuState(true);
   }
 

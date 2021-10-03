@@ -31,8 +31,7 @@ export class UserScheduleComponent implements OnInit {
       }
     }
 
-  ngOnInit() {
-    
+  ngOnInit() {  
     this.getSchedule();    
   }
 

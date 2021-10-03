@@ -18,8 +18,4 @@ export class DashboardComponent implements OnInit {
 
   }
 
-  getIsOpen(){
-    return this.menuService.menuState;
-  }
-
 }

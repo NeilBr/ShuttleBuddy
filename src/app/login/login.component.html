@@ -16,7 +16,9 @@
 
     <ion-row>
       <ion-col>
-        <ion-button [disabled]="!validForm()" color="primary"  expand="block" (click)="login()">Log In</ion-button>
+        <ion-button [disabled]="!validForm()" color="primary"  expand="block" (click)="login()">Log In
+        </ion-button>
+        <ion-progress-bar type="indeterminate" *ngIf="(isLoading | async)"></ion-progress-bar>
       </ion-col>
     </ion-row>
   </ion-card>

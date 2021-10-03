@@ -54,6 +54,13 @@ export class UserMapComponent implements OnInit, AfterViewInit {
   searchingLocations = false;
   searchString = '';
 
+
+  ////////////////////////////////////////////////////////////
+
+  // This component is a stripped down version of map.component.ts
+  // Methods are commented there
+
+  ///////////////////////////////////////////////////////////
   constructor(  
     private locationService: LocationService,
     private popoverController: PopoverController,
@@ -176,7 +183,6 @@ export class UserMapComponent implements OnInit, AfterViewInit {
 
   listenToSocket(){
     this.mapSocket.shuttleLocationUpdates.subscribe((shuttleLocations) =>{
-      // console.log(shuttleLocations);
       this.redrawShuttleLocations(shuttleLocations);
     });
   }
